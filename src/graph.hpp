@@ -12,8 +12,8 @@
 #include <functional>
 #include <set>
 #include <limits>
+#include <string>
 
-// Uwaga! Kod powinien być odporny na błędy i każda z metod jeżeli zachodzi niebezpieczeństwo wywołania z niepoprawnymi parametrami powinna zgłaszac odpowiednie wyjątki!
 
 // klasa reprezentująca graf skierowany oparty na MACIERZY SĄSIEDZTWA
 // V - dane przechowywane przez wierzcholki
@@ -39,14 +39,33 @@ public:
     Graph &operator=(Graph<V, E> &&source) = default;
     ~Graph(){};
 
-    // dodaje nowy wierzchołek z danymi przyjętymi w argumencie (wierzchołek powinien posiadać kopie danych) i zwraca "VerticesIterator" na nowo utworzony wierzchołek
+    /**
+     * @brief dodaje nowy wierzchołek
+     * 
+     * @param vertex_data dane wieszchołka 
+     * @return VerticesIterator na nowo utworzony wierzchołek
+     */
     VerticesIterator insertVertex(const V &vertex_data);
-    // dodaje nową krawędź między wierzchołkami o id "vertex1_id" i "vertex2_id" i zwraca "EdgesIterator" na nowo dodaną krawędź, oraz informację o tym czy została dodana nowa krawędź, czy nie
-    // jeśli krawędź między podanymi wierzchołkami już istnieje to działanie funkcji zależy od ostatniego argumentu
-    // jeśli ostatni argument przyjmuje wartość "true" to krawędź zostaje zastąpiona, jeśli "false" to nie
+
+    /**
+     * @brief dodaje nową krawędź między wierzchołkami
+     * 
+     * @param vertex1_id pierwsza krawędź 
+     * @param vertex2_id druga krawędź
+     * @param label wartość krawędzi 
+     * @param replace jeżeli prawda powtarzająca się krawędź zostanie zastąpiona, jeżeli fałsz to nie 
+     * @return std::pair<EdgesIterator, bool>  iterator na krawędź oraz czy krawędź została dodana 
+     */
     std::pair<EdgesIterator, bool> insertEdge(std::size_t vertex1_id, std::size_t vertex2_id, const E &label = E(), bool replace = true);
-    // usuwa wierzchołek o podanym id i zwraca "VerticesIterator" na kolejny wierzchołek, lub to samo co "endVertices()" w przypadku usunięcia ostatniego wierzchołka, lub braku wierzchołka o podanym id
+
+    /**
+     * @brief usuwa wierzchołek
+     * 
+     * @param vertex_id id wieszchołka 
+     * @return VerticesIterator  na kolejny wierzchołek, lub to samo co "endVertices()" w przypadku usunięcia ostatniego wierzchołka, lub braku wierzchołka o podanym id
+     */
     VerticesIterator removeVertex(std::size_t vertex_id);
+    
     // usuwa krawedź między dwoma wierzchołkami o podanych id i zwraca "EdgesIterator" na kolejną krawędź, lub to samo co "endEdges()" w przypadku usunięcia ostatniej krawedzi, lub braku krawędzi między wierzchołkami o podanych id
     EdgesIterator removeEdge(std::size_t vertex1_id, std::size_t vertex2_id);
     // zwraca true jeśli istnieje krawędź między wierzchołkami o podanych id, false w przeciwnym razie
@@ -55,6 +74,14 @@ public:
     {
         return vertex1_id < matrix.size() && vertex2_id < matrix.size() && matrix[vertex1_id][vertex2_id];
     };
+    /**
+     * @brief dodaje krawędzie z pliku csv
+     * 
+     * @param filename nazwa pliku z którego mają być załadowane krawędzie 
+     * @param addNode jeżeli prawda odrazu będą dodane wierzchołki 
+     */
+    void addFromCSV(std::string filename, bool addNode = true);
+
     // zwraca ilość wierzchołków w grafie
     // O(1)
     std::size_t nrOfVertices() const { return valueList.size(); };
@@ -100,7 +127,7 @@ private:
     std::vector<V> valueList;
     std::size_t verticesAmount;
 };
-//implementacja iteratorów 
+//implementacja iteratorów
 #include "graphIterator.hpp"
 
 /*
@@ -204,6 +231,13 @@ typename Graph<V, E>::EdgesIterator Graph<V, E>::removeEdge(std::size_t vertex1_
     else
         return endEdges();
 }
+
+template<typename V, typename E>
+void Graph<V, E>::addFromCSV(std::string filename, bool addNode) 
+{
+    this->
+}
+
 template <typename V, typename E>
 std::vector<size_t> Graph<V, E>::neighbours(size_t vertex) const
 {
