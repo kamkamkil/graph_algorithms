@@ -238,7 +238,7 @@ TEST_CASE("removeEdge", "[remove]")
     REQUIRE_FALSE(g.edgeExist(3, 2));
     REQUIRE_FALSE(g.edgeExist(1, 2));
 }
-TEST_CASE("allneighbours")
+TEST_CASE("all_neighbours")
 {
     Graph<int, std::string> g;
     g.insertVertex(1);
@@ -259,4 +259,18 @@ TEST_CASE("allneighbours")
     REQUIRE(g.neighbours(0) == temp);
     temp = {0, 2, 4};
     REQUIRE(g.neighbours(1) == temp);
+}
+
+TEST_CASE("load_from_file")
+{
+    Graph<int, int> g;
+    g.insertVertex(1);
+    g.insertVertex(2);
+    g.insertVertex(3);
+    g.insertVertex(4);
+    g.addFromCSV("../../data/graph1.csv");
+    REQUIRE(g.edgeLabel(1,1) == 1);
+    REQUIRE(g.edgeLabel(1,2) == 12);
+    REQUIRE(g.edgeLabel(2,2) == 10);
+    REQUIRE(g.edgeLabel(3,1) == 0);
 }

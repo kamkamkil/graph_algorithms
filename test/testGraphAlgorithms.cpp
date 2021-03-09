@@ -168,7 +168,7 @@ TEST_CASE("Dijkstras_algorithm")
     g.insertVertex("trzy");
     g.insertVertex("cztery");
     g.insertEdge(0, 1, 1);
-    g.insertEdge(0,2,3);
+    g.insertEdge(0, 2, 3);
     g.insertEdge(1, 2, 1);
     g.insertEdge(1, 4, 10);
     g.insertEdge(2, 3, 3);
@@ -180,6 +180,21 @@ TEST_CASE("Dijkstras_algorithm")
     {
         std::cout << i << std::endl;
     }
+}
 
-
+TEST_CASE("Topological_sorting")
+{
+    Graph<std::string, int> g;
+    g.insertVertex("zero");
+    g.insertVertex("jeden");
+    g.insertVertex("dwa");
+    g.insertVertex("trzy");
+    g.insertVertex("cztery");
+    g.insertEdge(0, 1, 1);
+    g.insertEdge(0, 2, 3);
+    g.insertEdge(1, 2, 1);
+    g.insertEdge(1, 4, 10);
+    g.insertEdge(2, 3, 3);
+    g.insertEdge(3, 4, 3);
+    topological_sorting<std::string, int>(g);
 }
