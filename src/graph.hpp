@@ -13,11 +13,15 @@
 #include <set>
 #include <limits>
 #include <string>
+#include <fstream>
+#include <sstream>
 
-
-// klasa reprezentująca graf skierowany oparty na MACIERZY SĄSIEDZTWA
-// V - dane przechowywane przez wierzcholki
-// E - dane przechowywane przez krawedzie (etykiety)
+/**
+ * @brief klasa reprezentująca graf skierowany oparty na MACIERZY SĄSIEDZTWA
+ * 
+ * @tparam V dane przechowywane przez wierzcholki
+ * @tparam E dane przechowywane przez krawedzie (etykiety)
+ */
 template <typename V, typename E>
 class Graph
 {
@@ -65,9 +69,10 @@ public:
      * @return VerticesIterator  na kolejny wierzchołek, lub to samo co "endVertices()" w przypadku usunięcia ostatniego wierzchołka, lub braku wierzchołka o podanym id
      */
     VerticesIterator removeVertex(std::size_t vertex_id);
-    
+
     // usuwa krawedź między dwoma wierzchołkami o podanych id i zwraca "EdgesIterator" na kolejną krawędź, lub to samo co "endEdges()" w przypadku usunięcia ostatniej krawedzi, lub braku krawędzi między wierzchołkami o podanych id
     EdgesIterator removeEdge(std::size_t vertex1_id, std::size_t vertex2_id);
+
     // zwraca true jeśli istnieje krawędź między wierzchołkami o podanych id, false w przeciwnym razie
     // O(1)
     bool edgeExist(std::size_t vertex1_id, std::size_t vertex2_id) const
@@ -78,47 +83,66 @@ public:
      * @brief dodaje krawędzie z pliku csv
      * 
      * @param filename nazwa pliku z którego mają być załadowane krawędzie 
-     * @param addNode jeżeli prawda odrazu będą dodane wierzchołki 
+     * @param addNode jeżeli prawda od razu będą dodane wierzchołki !notworking
+     * @param replace jeżeli prawda powtarzająca się krawędź zostanie zastąpiona, jeżeli fałsz to nie 
+     * 
      */
-    void addFromCSV(std::string filename, bool addNode = true);
+    void addFromCSV(std::string filename, bool addNode = true, bool replace = true );
 
+    void exportToDot(std::string filename); //@TODO
     // zwraca ilość wierzchołków w grafie
     // O(1)
     std::size_t nrOfVertices() const { return valueList.size(); };
+
     // zwraca ilość krawędzi w grafie
     // O(1)
     std::size_t nrOfEdges() const { return verticesAmount; };
+
     // drukuje macierz sąsiedztwa na konsoli (debug)
     void printNeighborhoodMatrix() const;
+
     // zwraca "VerticesIterator" do wierzchołka o podanym id, lub to samo co "endVertices()" w przypadku braku wierzchołka o podanym id
     VerticesIterator vertex(std::size_t vertex_id) { return vertex_id < valueList.size() ? VerticesIterator(vertex_id, &valueList) : endVertices(); };
+
     // zwraca referencję do danych wierzchołka o podanym id
     const V &vertexData(std::size_t vertex_id) const { return valueList[vertex_id]; };
+
     // zwraca referencję do danych wierzchołka o podanym id
     V &vertexData(std::size_t vertex_id) { return valueList[vertex_id]; };
+
     // zwraca "EdgesIterator" do krawędzi pomiędzy wierzchołkami o podanych id, lub to samo co "endEdges()" w przypadku braku krawędzi między wierzchołkami o podanych id
     EdgesIterator edge(std::size_t vertex1_id, std::size_t vertex2_id) { return matrix[vertex1_id][vertex2_id] ? EdgesIterator(vertex1_id, vertex2_id, &matrix) : end(); };
+
     // zwraca referencję do danych (etykiety) krawędzi pomiędzy wierzchołkami o podanych id
     const E &edgeLabel(std::size_t vertex1_id, std::size_t vertex2_id) const { return matrix[vertex1_id][vertex2_id].value(); };
+
     // zwraca referencję do danych (etykiety) krawędzi pomiędzy wierzchołkami o podanych id
     E &edgeLabel(std::size_t vertex1_id, std::size_t vertex2_id) { return matrix[vertex1_id][vertex2_id].value(); };
     VerticesIterator begin() { return beginVertices(); };
     VerticesIterator end() { return endVertices(); };
+
     // zwraca "VerticesIterator" na pierwszy wierzchołek (o najmniejszym id)
     VerticesIterator beginVertices() { return VerticesIterator(0, &valueList); };
+
     // zwraca "VerticesIterator" "za ostatni" wierzchołek
     VerticesIterator endVertices() { return VerticesIterator(valueList.size(), &valueList); };
+
     // zwraca "EdgesIterator" na pierwszą krawędź
     EdgesIterator beginEdges() { return EdgesIterator(this); };
+
     // zwraca "EdgesIterator" "za ostatnią" krawędź
     EdgesIterator endEdges() { return EdgesIterator(matrix.size(), 0, this); };
+
     //zwraca wszystkie wierzchołki do których można się dostać z danego wieszchołka
     std::vector<size_t> neighbours(size_t vertex) const;
     DFSIterator beginDFS(std::size_t vertex_id) { return DFSIterator(vertex_id, this); };
+
     // zwraca "DFSIterator" "za ostatni" wierzcholek
     DFSIterator endDFS() { return DFSIterator(); };
+
     // zwraca "BFSIterator" na wierzcholek o podanym id
     BFSIterator beginBFS(std::size_t vertex_id) { return BFSIterator(vertex_id, this); };
+
     // zwraca "BFSIterator" "za ostatni" wierzcholek
     BFSIterator endBFS() { return BFSIterator(); };
 
@@ -232,10 +256,31 @@ typename Graph<V, E>::EdgesIterator Graph<V, E>::removeEdge(std::size_t vertex1_
         return endEdges();
 }
 
-template<typename V, typename E>
-void Graph<V, E>::addFromCSV(std::string filename, bool addNode) 
+std::vector<std::string> split (const std::string &s, char delim) { //@TODO move ?
+    std::vector<std::string> result;
+    std::stringstream ss (s);
+    std::string item;
+
+    while (std::getline (ss, item, delim)) {
+        result.push_back (item);
+    }
+
+    return result;
+}
+
+template <typename V , typename E>
+void Graph<V, E>::addFromCSV(std::string filename, bool addNode, bool replace)
 {
-    this->
+    std::string s;
+    std::ifstream file(filename);
+
+    while (std::getline(file, s))
+    {
+        auto v = split(s,',');
+        insertEdge(std::stoi(v[0]),std::stoi(v[1]),std::stoi(v[2]),replace);
+    }
+
+    file.close();
 }
 
 template <typename V, typename E>
@@ -249,3 +294,7 @@ std::vector<size_t> Graph<V, E>::neighbours(size_t vertex) const
     }
     return result;
 }
+
+
+
+
