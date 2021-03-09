@@ -16,6 +16,8 @@ target_link_libraries(testGraph graph)
 add_executable(testGraphAlgorithms test/testGraphAlgorithms.cpp) 
 target_link_libraries(testGraphAlgorithms graph)
 
+add_test(testGraph testGraph)
+
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
