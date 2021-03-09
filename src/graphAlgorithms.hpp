@@ -1,3 +1,6 @@
+#pragma once
+#include <algorithm>
+#include <set>
 #include "../src/graph.hpp"
 
 template <typename V, typename E>
@@ -237,7 +240,9 @@ std::pair<double, std::vector<std::size_t>> astar(
 }
 
 template <typename V, typename E>
-void Topological_sorting(Graph<V, E> &graph)
+void topological_sorting(Graph<V, E> &graph)
 {
-
+    std::vector<V> result;
+    std::set<V> visited;
+    
 }
