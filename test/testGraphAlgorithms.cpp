@@ -175,11 +175,11 @@ TEST_CASE("Dijkstras_algorithm")
     g.insertEdge(3, 4, 3);
 
     auto result = dijkstra<std::string, int>(g, 0, 4);
-    std::cout << result.first << std::endl;
-    for (auto &&i : result.second)
-    {
-        std::cout << i << std::endl;
-    }
+    // std::cout << result.first << std::endl;
+    // for (auto &&i : result.second)
+    // {
+    //     std::cout << i << std::endl;
+    // }
 }
 
 TEST_CASE("Topological_sorting")
@@ -196,5 +196,11 @@ TEST_CASE("Topological_sorting")
     g.insertEdge(1, 4, 10);
     g.insertEdge(2, 3, 3);
     g.insertEdge(3, 4, 3);
-    topological_sorting<std::string, int>(g);
+    auto k = topological_sorting<std::string, int>(g);
+    std::cout << "-------------------------------" << std::endl;
+    while (!k.empty())
+    {
+        std::cout << k.top() << std::endl;
+        k.pop();
+    }
 }
