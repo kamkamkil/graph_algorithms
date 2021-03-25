@@ -244,12 +244,12 @@ std::pair<double, std::vector<std::size_t>> astar(
  * @brief zwraca nr wierzchołków posortowanych topologicznie, zakładamy że graf nie ma cykli oraz jest spójny
  * 
  * @param graph graf w jakim sortujemy wierzchołki
- * @return std::vector<int> posortowane wierzchołki, podane nr 
+ * @return std::stack<size_t> posortowane wierzchołki, podane nr 
  */
 template <typename V, typename E>
-void topological_sorting(Graph<V, E> &graph)
+std::stack<size_t> topological_sorting(Graph<V, E> &graph)
 {
-    std::vector<bool> visited(graph.nrOfEdges(), false);
+    std::vector<bool> visited(graph.nrOfVertices(), false);
     std::stack<size_t> result;
     size_t current = 0;
     while (std::any_of(visited.begin(), visited.end(), [](int i) { return i == false; }))
@@ -258,7 +258,7 @@ void topological_sorting(Graph<V, E> &graph)
         // szukamy wieszchołka startowego
         for (size_t i = 0; i < visited.size(); i++)
         {
-            if (visited[i])
+            if (!visited[i])
             {
                 current = i;
                 break;
@@ -268,23 +268,25 @@ void topological_sorting(Graph<V, E> &graph)
 
         while (!work_s.empty())
         {
-
+            current = work_s.top();
             auto nei = graph.neighbours(current);
             // sprawdzamy czy ma sąsiadów
             if (!nei.empty())
             {
-                if (visited[nei[0]]) // sąsiedzi byli odwiedzeni jak dobrze rozumiem to jak jeden sąsiad był odwiedzony to wszyscy byli
+                bool test = true;
+                for (auto n : nei)
+                {
+                    if (!visited[n])
+                    {
+                        test = false;
+                        work_s.push(n);
+                    }
+                }
+                if (test) // sąsiedzi byli odwiedzeni jak dobrze rozumiem to jak jeden sąsiad był odwiedzony to wszyscy byli
                 {
                     visited[current] = true;
                     result.push(current);
                     work_s.pop();
-                }
-                else // sąsiedzi nie byli odwiedzeni
-                {
-                    for (auto n : nei)
-                    {
-                        work_s.push(n);
-                    }
                 }
             }
             else // wierzchołek nie ma sąsiadów
@@ -293,7 +295,7 @@ void topological_sorting(Graph<V, E> &graph)
                 result.push(current);
                 work_s.pop();
             }
-            current = work_s.top();
         }
     }
+    return result;
 }
