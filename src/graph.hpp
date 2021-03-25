@@ -79,6 +79,7 @@ public:
     {
         return vertex1_id < matrix.size() && vertex2_id < matrix.size() && matrix[vertex1_id][vertex2_id];
     };
+    
     /**
      * @brief dodaje krawędzie z pliku csv
      * 
@@ -135,6 +136,8 @@ public:
 
     //zwraca wszystkie wierzchołki do których można się dostać z danego wieszchołka
     std::vector<size_t> neighbours(size_t vertex) const;
+
+
     DFSIterator beginDFS(std::size_t vertex_id) { return DFSIterator(vertex_id, this); };
 
     // zwraca "DFSIterator" "za ostatni" wierzcholek

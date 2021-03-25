@@ -79,6 +79,7 @@ public:
     };
     V &operator*() const { return graph->vertexData(current); };
     V *operator->() const { return graph->vertexData(current); };
+    std::size_t id() const{ return current;}
     operator bool() const {return !stack.empty();};
 
 private:
@@ -107,6 +108,7 @@ public:
     ;
     V &operator*() const { return graph->vertexData(queue.front()); };
     V *operator->() const { return graph->vertexData(queue.front()); };
+    std::size_t id() const{ return current;}
     operator bool() const {return !queue.empty();};
 
 private:

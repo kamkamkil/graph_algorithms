@@ -1,6 +1,7 @@
 #pragma once
 #include <algorithm>
 #include <set>
+#include <stack>
 #include "../src/graph.hpp"
 
 template <typename V, typename E>
@@ -239,10 +240,60 @@ std::pair<double, std::vector<std::size_t>> astar(
     return {result_distance, result};
 }
 
+/**
+ * @brief zwraca nr wierzchołków posortowanych topologicznie, zakładamy że graf nie ma cykli oraz jest spójny
+ * 
+ * @param graph graf w jakim sortujemy wierzchołki
+ * @return std::vector<int> posortowane wierzchołki, podane nr 
+ */
 template <typename V, typename E>
 void topological_sorting(Graph<V, E> &graph)
 {
-    std::vector<V> result;
-    std::set<V> visited;
-    
+    std::vector<bool> visited(graph.nrOfEdges(), false);
+    std::stack<size_t> result;
+    size_t current = 0;
+    while (std::any_of(visited.begin(), visited.end(), [](int i) { return i == false; }))
+    {
+        std::stack<size_t> work_s; // TODO zmienić nazwę na coś przyzwoitego
+        // szukamy wieszchołka startowego
+        for (size_t i = 0; i < visited.size(); i++)
+        {
+            if (visited[i])
+            {
+                current = i;
+                break;
+            }
+        }
+        work_s.push(current);
+
+        while (!work_s.empty())
+        {
+
+            auto nei = graph.neighbours(current);
+            // sprawdzamy czy ma sąsiadów
+            if (!nei.empty())
+            {
+                if (visited[nei[0]]) // sąsiedzi byli odwiedzeni jak dobrze rozumiem to jak jeden sąsiad był odwiedzony to wszyscy byli
+                {
+                    visited[current] = true;
+                    result.push(current);
+                    work_s.pop();
+                }
+                else // sąsiedzi nie byli odwiedzeni
+                {
+                    for (auto n : nei)
+                    {
+                        work_s.push(n);
+                    }
+                }
+            }
+            else // wierzchołek nie ma sąsiadów
+            {
+                visited[current] = true;
+                result.push(current);
+                work_s.pop();
+            }
+            current = work_s.top();
+        }
+    }
 }
