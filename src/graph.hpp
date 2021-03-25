@@ -70,16 +70,28 @@ public:
      */
     VerticesIterator removeVertex(std::size_t vertex_id);
 
-    // usuwa krawedź między dwoma wierzchołkami o podanych id i zwraca "EdgesIterator" na kolejną krawędź, lub to samo co "endEdges()" w przypadku usunięcia ostatniej krawedzi, lub braku krawędzi między wierzchołkami o podanych id
+    /**
+     * @brief usuwa krawedź między dwoma wierzchołkami o podanych id
+     * 
+     * @param vertex1_id pierwsza krawędź 
+     * @param vertex2_id druga krawędź 
+     * @return EdgesIterator na kolejną krawędź, lub to samo co "endEdges()" w przypadku usunięcia ostatniej krawedzi, lub braku krawędzi między wierzchołkami o podanych id
+     */
     EdgesIterator removeEdge(std::size_t vertex1_id, std::size_t vertex2_id);
 
-    // zwraca true jeśli istnieje krawędź między wierzchołkami o podanych id, false w przeciwnym razie
-    // O(1)
+    /**
+     * @brief sprawdza czy istnieje krawędź między dwoma wierzchołkami
+     * 
+     * @param vertex1_id pierwsza krawęd
+     * @param vertex2_id druga krawędź 
+     * @return true jeżeli istnieje 
+     * @return false jeżeli nie istnieje 
+     */
     bool edgeExist(std::size_t vertex1_id, std::size_t vertex2_id) const
     {
         return vertex1_id < matrix.size() && vertex2_id < matrix.size() && matrix[vertex1_id][vertex2_id];
     };
-    
+
     /**
      * @brief dodaje krawędzie z pliku csv
      * 
@@ -88,65 +100,165 @@ public:
      * @param replace jeżeli prawda powtarzająca się krawędź zostanie zastąpiona, jeżeli fałsz to nie 
      * 
      */
-    void addFromCSV(std::string filename, bool addNode = true, bool replace = true );
+    void addFromCSV(std::string filename, bool addNode = true, bool replace = true);
 
+    /**
+     * @brief zwraca plik w formacie dot opisujący graf
+     * 
+     * @param filename 
+     */
     void exportToDot(std::string filename); //@TODO
-    // zwraca ilość wierzchołków w grafie
-    // O(1)
+
+    /**
+     * @brief zwraca ilość wierzchołków w grafie 
+     * 
+     * @return std::size_t ilość wierzchołków w grafie 
+     */
     std::size_t nrOfVertices() const { return valueList.size(); };
 
-    // zwraca ilość krawędzi w grafie
-    // O(1)
+    /**
+     * @brief zwraca ilość krawędzi w grafie 
+     * 
+     * @return std::size_t ilość krawędzi w grafie
+     */
     std::size_t nrOfEdges() const { return verticesAmount; };
 
-    // drukuje macierz sąsiedztwa na konsoli (debug)
+    /**
+     * @brief drukuje macierz sąsiedztwa na konsoli (debug) 
+     * 
+     */
     void printNeighborhoodMatrix() const;
 
-    // zwraca "VerticesIterator" do wierzchołka o podanym id, lub to samo co "endVertices()" w przypadku braku wierzchołka o podanym id
+    // 
+    /**
+     * @brief zwraca "VerticesIterator" do wierzchołka o podanym id, lub to samo co "endVertices()" w przypadku braku wierzchołka o podanym id 
+     * 
+     * @param vertex_id id wieszchołka 
+     * @return VerticesIterator do wierzchołka o podanym id, lub to samo co "endVertices()"
+     */
     VerticesIterator vertex(std::size_t vertex_id) { return vertex_id < valueList.size() ? VerticesIterator(vertex_id, &valueList) : endVertices(); };
 
-    // zwraca referencję do danych wierzchołka o podanym id
+    /**
+     * @brief zwraca referencję do danych wierzchołka o podanym id
+     * 
+     * @param vertex_id id wieszchołka 
+     * @return const V& referencja do danych 
+     */
     const V &vertexData(std::size_t vertex_id) const { return valueList[vertex_id]; };
 
-    // zwraca referencję do danych wierzchołka o podanym id
+    /**
+     * @brief zwraca referencję do danych wierzchołka o podanym id 
+     * 
+     * @param vertex_id id wieszchołka
+     * @return V& referencja do danych
+     */
     V &vertexData(std::size_t vertex_id) { return valueList[vertex_id]; };
 
-    // zwraca "EdgesIterator" do krawędzi pomiędzy wierzchołkami o podanych id, lub to samo co "endEdges()" w przypadku braku krawędzi między wierzchołkami o podanych id
+    /**
+     * @brief zwraca "EdgesIterator" do krawędzi pomiędzy wierzchołkami o podanych id, lub to samo co "endEdges()" w przypadku braku krawędzi między wierzchołkami o podanych id
+     * 
+     * @param vertex1_id id pierwszej krawędzi 
+     * @param vertex2_id id drógiej krawędzi  
+     * @return EdgesIterator do krawędzi pomiędzy wierzchołkami o podanych id, lub to samo co "endEdges()"
+     */
     EdgesIterator edge(std::size_t vertex1_id, std::size_t vertex2_id) { return matrix[vertex1_id][vertex2_id] ? EdgesIterator(vertex1_id, vertex2_id, &matrix) : end(); };
 
-    // zwraca referencję do danych (etykiety) krawędzi pomiędzy wierzchołkami o podanych id
+     
+    /**
+     * @brief  zwraca referencję do danych (etykiety) krawędzi pomiędzy wierzchołkami o podanych id 
+     * 
+     * @param vertex1_id pierwszy wierzchołek
+     * @param vertex2_id drógi wierzchołek
+     * @return const E& referencja do danych 
+     */
     const E &edgeLabel(std::size_t vertex1_id, std::size_t vertex2_id) const { return matrix[vertex1_id][vertex2_id].value(); };
 
-    // zwraca referencję do danych (etykiety) krawędzi pomiędzy wierzchołkami o podanych id
+    /**
+     * @brief  zwraca referencję do danych (etykiety) krawędzi pomiędzy wierzchołkami o podanych id 
+     * 
+     * @param vertex1_id pierwszy wierzchołek
+     * @param vertex2_id drógi wierzchołek
+     * @return const E& referencja do danych 
+     */
     E &edgeLabel(std::size_t vertex1_id, std::size_t vertex2_id) { return matrix[vertex1_id][vertex2_id].value(); };
+
+    /**
+     * @brief zwraca VerticesIterator na początek grafu (o najmniejszym id)
+     * 
+     * @return VerticesIterator na początek grafu (o najmniejszym id)
+     */
     VerticesIterator begin() { return beginVertices(); };
+    /**
+     * @brief zwraca VerticesIterator za ostatnim wierzchołkiem grafu
+     * 
+     * @return VerticesIterator za ostatnim wierzchołkiem grafu
+     */
     VerticesIterator end() { return endVertices(); };
 
-    // zwraca "VerticesIterator" na pierwszy wierzchołek (o najmniejszym id)
+    /**
+     * @brief zwraca VerticesIterator na początek grafu (o najmniejszym id)
+     * 
+     * @return VerticesIterator na początek grafu (o najmniejszym id)
+     */
     VerticesIterator beginVertices() { return VerticesIterator(0, &valueList); };
 
-    // zwraca "VerticesIterator" "za ostatni" wierzchołek
+    /**
+     * @brief zwraca VerticesIterator za ostatnim wierzchołkiem grafu
+     * 
+     * @return VerticesIterator za ostatnim wierzchołkiem grafu
+     */
     VerticesIterator endVertices() { return VerticesIterator(valueList.size(), &valueList); };
 
-    // zwraca "EdgesIterator" na pierwszą krawędź
+    /**
+     * @brief zwraca "EdgesIterator" na pierwszą krawędź 
+     * 
+     * @return EdgesIterator na pierwszą krawędź
+     */
     EdgesIterator beginEdges() { return EdgesIterator(this); };
 
-    // zwraca "EdgesIterator" "za ostatnią" krawędź
+    /**
+     * @brief zwraca "EdgesIterator" "za ostatnią" krawędź 
+     * 
+     * @return EdgesIterator "za ostatnią" krawędź
+     */
     EdgesIterator endEdges() { return EdgesIterator(matrix.size(), 0, this); };
 
-    //zwraca wszystkie wierzchołki do których można się dostać z danego wieszchołka
+    /**
+     * @brief zwraca wszystkie wierzchołki do których można się dostać z danego wieszchołka
+     * 
+     * @param vertex id wieszchołka którego szukamy sąsiadów 
+     * @return std::vector<size_t> vector sąsiadów
+     */
     std::vector<size_t> neighbours(size_t vertex) const;
 
-
+    /**
+     * @brief zwraca iterator DFS ma wierzchołek o podanym id 
+     * 
+     * @param vertex_id id wieszchołka 
+     * @return DFSIterator na podanych wierzchołek
+     */
     DFSIterator beginDFS(std::size_t vertex_id) { return DFSIterator(vertex_id, this); };
 
-    // zwraca "DFSIterator" "za ostatni" wierzcholek
+    /**
+     * @brief zwraca "DFSIterator" "za ostatni" wierzcholek
+     * 
+     * @return DFSIterator "za ostatni" wierzcholek
+     */
     DFSIterator endDFS() { return DFSIterator(); };
 
-    // zwraca "BFSIterator" na wierzcholek o podanym id
+    /**
+     * @brief zwraca "BFSIterator" na wierzcholek o podanym id 
+     * 
+     * @param vertex_id id wierzchołka 
+     * @return BFSIterator na wierzcholek o podanym id
+     */
     BFSIterator beginBFS(std::size_t vertex_id) { return BFSIterator(vertex_id, this); };
 
-    // zwraca "BFSIterator" "za ostatni" wierzcholek
+    /**
+     * @brief zwraca "BFSIterator" "za ostatni" wierzcholek 
+     * 
+     * @return BFSIterator "BFSIterator" "za ostatni" wierzcholek
+     */
     BFSIterator endBFS() { return BFSIterator(); };
 
 private:
@@ -259,19 +371,21 @@ typename Graph<V, E>::EdgesIterator Graph<V, E>::removeEdge(std::size_t vertex1_
         return endEdges();
 }
 
-std::vector<std::string> split (const std::string &s, char delim) { //@TODO move ?
+std::vector<std::string> split(const std::string &s, char delim)
+{ //@TODO move ?
     std::vector<std::string> result;
-    std::stringstream ss (s);
+    std::stringstream ss(s);
     std::string item;
 
-    while (std::getline (ss, item, delim)) {
-        result.push_back (item);
+    while (std::getline(ss, item, delim))
+    {
+        result.push_back(item);
     }
 
     return result;
 }
 
-template <typename V , typename E>
+template <typename V, typename E>
 void Graph<V, E>::addFromCSV(std::string filename, bool addNode, bool replace)
 {
     std::string s;
@@ -279,8 +393,8 @@ void Graph<V, E>::addFromCSV(std::string filename, bool addNode, bool replace)
 
     while (std::getline(file, s))
     {
-        auto v = split(s,',');
-        insertEdge(std::stoi(v[0]),std::stoi(v[1]),std::stoi(v[2]),replace);
+        auto v = split(s, ',');
+        insertEdge(std::stoi(v[0]), std::stoi(v[1]), std::stoi(v[2]), replace);
     }
 
     file.close();
@@ -297,7 +411,3 @@ std::vector<size_t> Graph<V, E>::neighbours(size_t vertex) const
     }
     return result;
 }
-
-
-
-
