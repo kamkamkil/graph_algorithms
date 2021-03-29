@@ -1,5 +1,9 @@
 # AISD zadania opis
 
+## dokumentacja
+
+dokumentację projektu można znaleźć na <https://kamkamkil.github.io/graph_algorithms/index.html>
+
 ## instalacja
 
 do kompilacji programu wymagany jest program cmake,aby zainstalować make należy wpisać:
