@@ -4,6 +4,13 @@
 #include <stack>
 #include "../src/graph.hpp"
 
+/**
+ * @brief używa funkcji na każdym z elementów w kolejności DFS zaczynając od wieszchołka vertex 
+ * 
+ * @param graph graf na na którym będzie wykonywana ta funkcja 
+ * @param vertex wierzchołek startowy 
+ * @param fun 
+ */
 template <typename V, typename E>
 void DFS(const Graph<V, E> graph, size_t vertex, std::function<void(const V &)> fun)
 {
@@ -66,6 +73,14 @@ void DFS(const Graph<V, E> graph, size_t vertex, std::function<void(const V &)> 
         }
     };
 }
+
+/**
+ * @brief używa funkcji na każdym z elementów w kolejności BFS zaczynając od wieszchołka vertex 
+ * 
+ * @param graph graf na na którym będzie wykonywana ta funkcja 
+ * @param vertex wierzchołek startowy 
+ * @param fun 
+ */
 template <typename V, typename E>
 void BFS(const Graph<V, E> graph, size_t vertex, std::function<void(const V &)> fun) //const
 {
@@ -101,6 +116,13 @@ void BFS(const Graph<V, E> graph, size_t vertex, std::function<void(const V &)> 
     }
 }
 
+/**
+ * @brief zwraca kiolejność przeszuiwania BFS
+ *  
+ * @param graph graf na jaki pracujemy 
+ * @param vertex wierzchołek startowy
+ * @return std::vector<size_t> kolejność przeszukiwania 
+ */
 template <typename V, typename E>
 std::vector<size_t> BFS(const Graph<V, E> graph, size_t vertex) //const
 {
@@ -138,6 +160,15 @@ std::vector<size_t> BFS(const Graph<V, E> graph, size_t vertex) //const
     return result;
 }
 
+/**
+ * @brief zwraca najkrótszą trasę obliczaną algorytmem Dijkstry oraz jej długość 
+ * 
+ * @param graph graf na jakim pracujemy 
+ * @param start_idx wierzchołek startowy
+ * @param end_idx wierzchołek końcowy
+ * @param getEdgeLength sposób obliczania długości krawędzi (domyślnie jest to po prostu krawędź)
+ * @return std::pair<double, std::vector<std::size_t>> (długość trasy, ścieżka)
+ */
 template <typename V, typename E>
 std::pair<double, std::vector<std::size_t>> dijkstra(
     Graph<V, E> &graph, std::size_t start_idx, std::size_t end_idx, std::function<double(const E &)> getEdgeLength = [](const E &edge) -> E { return edge; })
@@ -187,7 +218,16 @@ std::pair<double, std::vector<std::size_t>> dijkstra(
     }
     return {result_distance, result};
 }
-
+/**
+ * @brief zwraca najkrótszą trasę obliczaną algorytmem A* oraz jej długość 
+ * 
+ * @param graph graf na jakim pracujemy 
+ * @param start_idx wierzchołek startowy
+ * @param end_idx wierzchołek końcowy
+ * @param heuristics heurystyka służąca do przybliżenia odległości w tym algorytmie 
+ * @param getEdgeLength sposób obliczania długości krawędzi (domyślnie jest to po prostu krawędź)
+ * @return std::pair<double, std::vector<std::size_t>> (długość trasy, ścieżka)
+ */
 template <typename V, typename E>
 std::pair<double, std::vector<std::size_t>> astar(
     Graph<V, E> &graph, std::size_t start_idx, std::size_t end_idx, std::function<double(const Graph<V, E> &, std::size_t actual_vertex_id, std::size_t end_vertex_id)> heuristics, std::function<double(const E &)> getEdgeLength = [](const E &edge) -> E { return edge; })
@@ -247,14 +287,14 @@ std::pair<double, std::vector<std::size_t>> astar(
  * @return std::stack<size_t> posortowane wierzchołki, podane nr 
  */
 template <typename V, typename E>
-std::stack<size_t> topological_sorting(Graph<V, E> &graph)
+std::vector<size_t> topological_sorting(Graph<V, E> &graph)
 {
     std::vector<bool> visited(graph.nrOfVertices(), false);
-    std::stack<size_t> result;
+    std::vector<size_t> result;
     size_t current = 0;
     while (std::any_of(visited.begin(), visited.end(), [](int i) { return i == false; }))
     {
-        std::stack<size_t> work_s; // TODO zmienić nazwę na coś przyzwoitego
+        std::stack<size_t> work_s; 
         // szukamy wieszchołka startowego
         for (size_t i = 0; i < visited.size(); i++)
         {
@@ -285,14 +325,14 @@ std::stack<size_t> topological_sorting(Graph<V, E> &graph)
                 if (test) // sąsiedzi byli odwiedzeni jak dobrze rozumiem to jak jeden sąsiad był odwiedzony to wszyscy byli
                 {
                     visited[current] = true;
-                    result.push(current);
+                    result.push_back(current);
                     work_s.pop();
                 }
             }
             else // wierzchołek nie ma sąsiadów
             {
                 visited[current] = true;
-                result.push(current);
+                result.push_back(current);
                 work_s.pop();
             }
         }

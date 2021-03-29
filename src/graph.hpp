@@ -26,13 +26,29 @@ template <typename V, typename E>
 class Graph
 {
 public:
-    // iterator po wierzchołkach (rosnąco po id wierzchołków)
+
+    /**
+     * @brief iterator po wierzchołkach (rosnąco po id wierzchołków) 
+     * 
+     */
     class VerticesIterator;
-    // iterator po istniejących krawędziach
+
+    /**
+     * @brief iterator po istniejących krawędziach 
+     * 
+     */
     class EdgesIterator;
-    // iterator przeszukiwania przez DFS
+
+    /**
+     * @brief iterator przeszukiwania przez DFS  
+     * 
+     */
     class DFSIterator;
-    // iterator przeszukiwania przez BFS
+    
+    /**
+     * @brief iterator przeszukiwania przez BFS
+     * 
+     */
     class BFSIterator;
 
 public:
@@ -93,7 +109,7 @@ public:
     };
 
     /**
-     * @brief dodaje krawędzie z pliku csv
+     * @brief dodaje krawędzie z pliku csv, graf musi mieć odpowiednią ilość krawędzi
      * 
      * @param filename nazwa pliku z którego mają być załadowane krawędzie 
      * @param addNode jeżeli prawda od razu będą dodane wierzchołki !notworking
@@ -103,11 +119,14 @@ public:
     void addFromCSV(std::string filename, bool addNode = true, bool replace = true);
 
     /**
-     * @brief zwraca plik w formacie dot opisujący graf
+     * @brief zwraca graf w formacie dot
      * 
-     * @param filename 
+     * @param filename nazwa pliku
+     * @param edgeLabel prawda jeżeli mają być nazwy krawędzi (domyślnie fałsz)
+     * @param vertexLabel prawda jeżeli mają być nazwy wierzchołków (domyślnie fałsz)
+     * @param path ścieżka do wyrysowania na czerwono (Domyślnie pusta)
      */
-    void exportToDot(std::string filename); //@TODO
+    void exportToDot(std::string filename,bool edgeLabel = false, bool vertexLabel = false,std::vector<int> path = {}); 
 
     /**
      * @brief zwraca ilość wierzchołków w grafie 
@@ -129,7 +148,7 @@ public:
      */
     void printNeighborhoodMatrix() const;
 
-    // 
+    //
     /**
      * @brief zwraca "VerticesIterator" do wierzchołka o podanym id, lub to samo co "endVertices()" w przypadku braku wierzchołka o podanym id 
      * 
@@ -163,7 +182,6 @@ public:
      */
     EdgesIterator edge(std::size_t vertex1_id, std::size_t vertex2_id) { return matrix[vertex1_id][vertex2_id] ? EdgesIterator(vertex1_id, vertex2_id, &matrix) : end(); };
 
-     
     /**
      * @brief  zwraca referencję do danych (etykiety) krawędzi pomiędzy wierzchołkami o podanych id 
      * 
@@ -371,31 +389,69 @@ typename Graph<V, E>::EdgesIterator Graph<V, E>::removeEdge(std::size_t vertex1_
         return endEdges();
 }
 
-std::vector<std::string> split(const std::string &s, char delim)
-{ //@TODO move ?
-    std::vector<std::string> result;
-    std::stringstream ss(s);
-    std::string item;
+    std::vector<std::string> split(const std::string &s, char delim)
+    { 
+        std::vector<std::string> result;
+        std::stringstream ss(s);
+        std::string item;
 
-    while (std::getline(ss, item, delim))
-    {
-        result.push_back(item);
+        while (std::getline(ss, item, delim))
+        {
+            result.push_back(item);
+        }
+
+        return result;
     }
-
-    return result;
-}
 
 template <typename V, typename E>
 void Graph<V, E>::addFromCSV(std::string filename, bool addNode, bool replace)
 {
+
     std::string s;
     std::ifstream file(filename);
 
     while (std::getline(file, s))
     {
-        auto v = split(s, ',');
+        auto v = split(s, ',');        
         insertEdge(std::stoi(v[0]), std::stoi(v[1]), std::stoi(v[2]), replace);
     }
+
+    file.close();
+}
+
+template <typename V, typename E>
+void Graph<V, E>::exportToDot(std::string filename,bool edgeLabel_, bool vertexLabel_,std::vector<int> path)
+{
+    std::ofstream file;
+    file.open(filename);
+    file << "digraph G {" << std::endl;
+    for (size_t i = 0; i < nrOfVertices(); i++)
+    {
+        auto v = neighbours(i);
+        for (auto var : v)
+        {
+            file << i << " -> " << var;
+            if (edgeLabel_)
+            {
+                file << " [ label = \"" << edgeLabel(i,var) << "\"]";
+            }
+            file <<std::endl;
+        }
+        if (vertexLabel_)
+        {
+            file << i << " [ label  = \"" << vertexData(i) << "\"]" << std::endl;
+        }
+        
+    }
+    if (!path.empty())
+    {
+        for(auto p : path)
+        {
+            file << p << " [ color = red ]" << std::endl ;  
+        }
+    }
+    
+    file << "}" << std::endl;
 
     file.close();
 }
