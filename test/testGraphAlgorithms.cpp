@@ -4,6 +4,7 @@
 #include "../src/graph.hpp"
 #include "../src/graphAlgorithms.hpp"
 #include <string>
+#include <algorithm>
 
 TEST_CASE("DFS", "[Search_algorithm]")
 {
@@ -161,6 +162,7 @@ TEST_CASE("BFS", "[Search_algorithm]")
 }
 TEST_CASE("Dijkstras_algorithm")
 {
+
     Graph<std::string, int> g;
     g.insertVertex("zero");
     g.insertVertex("jeden");
@@ -174,33 +176,74 @@ TEST_CASE("Dijkstras_algorithm")
     g.insertEdge(2, 3, 3);
     g.insertEdge(3, 4, 3);
 
-    auto result = dijkstra<std::string, int>(g, 0, 4);
-    // std::cout << result.first << std::endl;
-    // for (auto &&i : result.second)
-    // {
-    //     std::cout << i << std::endl;
-    // }
+    auto result = dijkstra(g, 0, 4);
+    std::vector rresult({0, 1, 2, 3, 4});
+    REQUIRE(result.first == 8);
+    for (size_t i = 0; i < result.second.size(); i++)
+    {
+        REQUIRE(result.second[i] == rresult[i]);
+    }
 }
 
 TEST_CASE("Topological_sorting")
 {
-    Graph<std::string, int> g;
-    g.insertVertex("zero");
-    g.insertVertex("jeden");
-    g.insertVertex("dwa");
-    g.insertVertex("trzy");
-    g.insertVertex("cztery");
-    g.insertEdge(0, 1, 1);
-    g.insertEdge(0, 2, 3);
-    g.insertEdge(1, 2, 1);
-    g.insertEdge(1, 4, 10);
-    g.insertEdge(2, 3, 3);
-    g.insertEdge(3, 4, 3);
-    auto k = topological_sorting<std::string, int>(g);
-    std::cout << "-------------------------------" << std::endl;
-    while (!k.empty())
+    SECTION("first_graph")
     {
-        std::cout << k.top() << std::endl;
-        k.pop();
+        Graph<std::string, int> g;
+        g.insertVertex("zero");
+        g.insertVertex("jeden");
+        g.insertVertex("dwa");
+        g.insertVertex("trzy");
+        g.insertVertex("cztery");
+        g.insertEdge(0, 1, 1);
+        g.insertEdge(0, 2, 3);
+        g.insertEdge(1, 2, 1);
+        g.insertEdge(1, 4, 10);
+        g.insertEdge(2, 3, 3);
+        g.insertEdge(3, 4, 3);
+        auto sorted = topological_sorting(g);
+        for (auto i = (++sorted.begin()); i != sorted.end(); i++)
+        {
+            for (auto iter = g.beginDFS(*i); iter != g.endDFS(); iter++)
+            {
+                REQUIRE_FALSE(std::find(sorted.begin(), i, iter.id()) == sorted.end());
+            }
+        }
+    }
+    SECTION("second_graph")
+    {
+        Graph<int, int> g;
+        g.insertVertex(0);
+        g.insertVertex(1);
+        g.insertVertex(2);
+        g.insertVertex(3);
+        g.insertVertex(4);
+        g.insertVertex(5);
+        g.insertVertex(6);
+        g.insertVertex(7);
+        g.insertVertex(8);
+        g.insertVertex(9);
+        g.insertVertex(10);
+
+        g.insertEdge(1, 0);
+        g.insertEdge(0, 2);
+        g.insertEdge(3, 2);
+        g.insertEdge(2, 4);
+        g.insertEdge(5, 4);
+        g.insertEdge(4, 6);
+        g.insertEdge(7, 6);
+        g.insertEdge(8, 9);
+        g.insertEdge(9, 10);
+        g.insertEdge(10, 6);
+        g.insertEdge(0,8 );
+        g.insertEdge(3,8 );
+        auto sorted = topological_sorting(g);
+        for (auto i = (++sorted.begin()); i != sorted.end(); i++)
+        {
+            for (auto iter = g.beginDFS(*i); iter != g.endDFS(); iter++)
+            {
+                REQUIRE_FALSE(std::find(sorted.begin(), i, iter.id()) == sorted.end());
+            }
+        }
     }
 }
