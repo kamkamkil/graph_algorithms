@@ -1,5 +1,33 @@
 # AISD zadania opis
 
+## instalacja
+
+do kompilacji programu wymagany jest program cmake,aby zainstalować make należy wpisać:
+
+```bash
+sudo apt  install cmake
+```
+
+następnie należy utworzyć folder build:
+
+```bash
+mkdir build
+```
+
+następnie wchodzimy do pliku build
+
+```bash
+cd build
+```
+
+teraz za pomocą cmake przygotowujemy konfigurację naszego projektu, cmake powinien znaleźć nasz kompilator i przygotować nam makefile
+
+```bash
+cmake ..
+```
+
+teraz mamy już wygenerowany naż makefile, wystarczy wpisać make i nasz program zostanie skompilowany, pliki wykonywalne będą znajdować się w folderze build.
+
 ## zad 5 topologiczne sortowanie wierzchołków
 
 ### opis algorytmu
