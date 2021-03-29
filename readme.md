@@ -29,3 +29,27 @@ Sam algorytm (nie licząc grafu) do pracy wymaga :
 - oraz kilku zmiennych pomocniczych
 
 size_t w c++ ma wielkość co najmniej 16 bitów, tyle też przyjmę, zakładam tez że stos jak i wektor to wydzielony blok pamięci o danej długości w takim przypadku złożoność to k * 1 + k * 16 + k * 16 + w * 16 = k * 33 + w * 16
+
+## zad 10
+
+### opis  algorytmu
+
+algorytm jest bardzo podobny do algorytmu Floyda-Warshalla tutaj jednak zamiast arytmetycznie dodawać odległości robimy to logicznie.
+
+### Opis Testów
+
+testy polegają na użyciu DFS aby sprawdzić wszystkie możliwe wieszchołki do których można się dostać
+
+### Złożoność  Obliczeniowa
+
+linia kodu:
+
+```c++
+result[i][j] = result[i][j] || (result[i][a] && result[a][j]);
+```
+
+musi być wykonana k^3 razy gdzie k to ilość wierzchołków. warto jeszcze dodać że musimy "odkryć wszystkich sąsiadów wierzchołków startowych co jest k^2. Ostateczna złożoność obliczeniowa to o(k^3)
+
+### złożoność Pamięciowa
+
+potrzebujemy macierzy bool k na k więc złożoność pamięciowa to o(k^2)
