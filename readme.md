@@ -28,6 +28,8 @@ cmake ..
 
 teraz mamy już wygenerowany naż makefile, wystarczy wpisać make i nasz program zostanie skompilowany, pliki wykonywalne będą znajdować się w folderze build.
 
+Jeżeli chcemy tyko sprawdzić czy testy poprawnie są wykonywane możemy będąc w pliku build wpisać `ctest`
+
 ## zad 5 topologiczne sortowanie wierzchołków
 
 ### opis algorytmu
