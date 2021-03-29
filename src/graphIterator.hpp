@@ -143,7 +143,8 @@ Graph<V, E>::DFSIterator::DFSIterator(size_t start_, Graph<V, E> *graph_) : curr
     visited.resize(graph->nrOfVertices(), false);
     visited[start] = true;
     stack.push(start);
-    size_t current = graph->neighbours(start).back();
+    if(!graph->neighbours(start).empty())
+        size_t current = graph->neighbours(start).back();
 }
 template <typename V, typename E>
 typename Graph<V, E>::DFSIterator &Graph<V, E>::DFSIterator::operator++()

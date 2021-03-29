@@ -235,8 +235,8 @@ TEST_CASE("Topological_sorting")
         g.insertEdge(8, 9);
         g.insertEdge(9, 10);
         g.insertEdge(10, 6);
-        g.insertEdge(0,8 );
-        g.insertEdge(3,8 );
+        g.insertEdge(0, 8);
+        g.insertEdge(3, 8);
         auto sorted = topological_sorting(g);
         for (auto i = (++sorted.begin()); i != sorted.end(); i++)
         {
@@ -244,6 +244,82 @@ TEST_CASE("Topological_sorting")
             {
                 REQUIRE_FALSE(std::find(sorted.begin(), i, iter.id()) == sorted.end());
             }
+        }
+    }
+}
+TEST_CASE("transitive_Closure")
+{
+    SECTION("first_graph")
+    {
+        Graph<std::string, int> g;
+        g.insertVertex("zero");
+        g.insertVertex("jeden");
+        g.insertVertex("dwa");
+        g.insertVertex("trzy");
+        g.insertVertex("cztery");
+        g.insertEdge(0, 1, 1);
+        g.insertEdge(0, 2, 3);
+        g.insertEdge(1, 2, 1);
+        g.insertEdge(1, 4, 10);
+        g.insertEdge(2, 3, 3);
+        g.insertEdge(3, 4, 3);
+        auto tc = transitiveClosure(g);
+
+        for (size_t i = 0; i < tc.size(); i++)
+        {
+            size_t temp = std::count(tc[i].begin(), tc[i].end(), true);
+            for (auto dfs = g.beginDFS(i); dfs != g.endDFS(); dfs++)
+            {
+                CHECK(tc[i][dfs.id()]);
+                if (tc[i][dfs.id()])
+                    temp--;
+            }
+            CHECK(temp == 0);
+        }
+    }
+    SECTION("bigger_graph")
+    {
+        Graph<int, int> g;
+        g.insertVertex(0);
+        g.insertVertex(1);
+        g.insertVertex(2);
+        g.insertVertex(3);
+        g.insertVertex(4);
+        g.insertVertex(5);
+        g.insertVertex(6);
+        g.insertVertex(7);
+        g.insertVertex(8);
+        g.insertVertex(9);
+        g.insertVertex(10);
+
+        g.insertEdge(0, 2);
+        g.insertEdge(2, 3);
+        g.insertEdge(4, 3);
+        g.insertEdge(3, 5);
+        g.insertEdge(3, 6);
+        g.insertEdge(6, 2);
+        g.insertEdge(2, 4);
+        g.insertEdge(7, 5);
+        g.insertEdge(8, 7);
+        g.insertEdge(8, 4);
+        g.insertEdge(9, 0);
+        g.insertEdge(8, 9);
+        g.insertEdge(6, 8);
+        g.insertEdge(5, 10);
+        g.insertEdge(11, 10);
+
+        auto tc = transitiveClosure(g);
+
+        for (size_t i = 0; i < tc.size(); i++)
+        {
+            size_t temp = std::count(tc[i].begin(), tc[i].end(), true);
+            for (auto dfs = g.beginDFS(i); dfs != g.endDFS(); dfs++)
+            {
+                CHECK(tc[i][dfs.id()]);
+                if (tc[i][dfs.id()])
+                    temp--;
+            }
+            CHECK(temp == 0);
         }
     }
 }
