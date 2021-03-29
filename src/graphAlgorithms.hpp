@@ -340,17 +340,7 @@ std::vector<size_t> topological_sorting(Graph<V, E> &graph)
     return result;
 }
 
-// /**
-//  * @brief zwraca wszystkie cykle proste w grafie
-//  *
-//  * @param graph graf w którym szukamy cykli
-//  * @return std::vector<std::vector<size_t>> wektor wektorów w którym we-w wektory reprezentują cykle
-//  */
-// template <typename V, typename E>
-// std::vector<std::vector<size_t>> graph_cycle(Graph<V, E> &graph)
-// {
 
-// }
 
 /**
  * @brief zwraca domknięcie przechodnie liczone metodą Floyda-Warshalla
