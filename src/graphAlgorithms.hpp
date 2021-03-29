@@ -294,7 +294,7 @@ std::vector<size_t> topological_sorting(Graph<V, E> &graph)
     size_t current = 0;
     while (std::any_of(visited.begin(), visited.end(), [](int i) { return i == false; }))
     {
-        std::stack<size_t> work_s; 
+        std::stack<size_t> work_s;
         // szukamy wieszchołka startowego
         for (size_t i = 0; i < visited.size(); i++)
         {
@@ -337,5 +337,49 @@ std::vector<size_t> topological_sorting(Graph<V, E> &graph)
             }
         }
     }
+    return result;
+}
+
+// /**
+//  * @brief zwraca wszystkie cykle proste w grafie
+//  *
+//  * @param graph graf w którym szukamy cykli
+//  * @return std::vector<std::vector<size_t>> wektor wektorów w którym we-w wektory reprezentują cykle
+//  */
+// template <typename V, typename E>
+// std::vector<std::vector<size_t>> graph_cycle(Graph<V, E> &graph)
+// {
+
+// }
+
+/**
+ * @brief zwraca domknięcie przechodnie liczone metodą Floyda-Warshalla
+ * 
+ * @param graph graf którego domknięcia szukamy
+ * @return std::vector<std::vector<size_t>> 
+ */
+template <typename V, typename E>
+std::vector<std::vector<bool>> transitiveClosure(Graph<V, E> &graph)
+{
+    std::vector<std::vector<bool>> result(graph.nrOfVertices(), std::vector<bool>(graph.nrOfVertices(), false));
+    for (size_t i = 0; i < graph.nrOfVertices(); i++)
+    {
+        auto nei = graph.neighbours(i);
+        for(auto var : nei)
+            result[i][var] = true;   
+        result[i][i] = true;
+    }
+
+    for (size_t a = 0; a < graph.nrOfVertices() ; a++)
+    {
+        for (size_t i = 0; i < graph.nrOfVertices(); i++)
+        {
+            for (size_t j = 0; j < graph.nrOfVertices(); j++)
+            {
+                result[i][j] = result[i][j] || (result[i][a] && result[a][j]);
+            }
+        }
+    }
+
     return result;
 }
