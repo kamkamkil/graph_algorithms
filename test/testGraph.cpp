@@ -261,16 +261,18 @@ TEST_CASE("all_neighbours")
     REQUIRE(g.neighbours(1) == temp);
 }
 
-TEST_CASE("load_from_file")
-{
-    Graph<int, int> g;
-    g.insertVertex(1);
-    g.insertVertex(2);
-    g.insertVertex(3);
-    g.insertVertex(4);
-    g.addFromCSV("../../data/graph1.csv");
-    REQUIRE(g.edgeLabel(1,1) == 1);
-    REQUIRE(g.edgeLabel(1,2) == 12);
-    REQUIRE(g.edgeLabel(2,2) == 10);
-    REQUIRE(g.edgeLabel(3,1) == 0);
-}
+// TEST_CASE("load_from_file")
+// {
+//     Graph<int, int> g;
+//     for (size_t i = 0; i < 1000; i++)
+//     {
+//         g.insertVertex(i);
+//     }
+    
+//     g.addFromCSV("../../data/1000.csv");
+//     // REQUIRE(g.edgeLabel(1,1) == 1);
+//     // REQUIRE(g.edgeLabel(1,2) == 12);
+//     // REQUIRE(g.edgeLabel(2,2) == 10);
+//     // REQUIRE(g.edgeLabel(3,1) == 0);
+//     g.exportToDot("../../out/temp.dot");
+// }
