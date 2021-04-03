@@ -46,7 +46,9 @@ W teście sprawdzamy nasz algorytm na dwóch przypadkach, mniejszym i większym 
 
 ### Złożoność  obliczeniowa
 
-dla każdego wierzchołka musimy znaleźć wszystkich jego sąsiadów dla k wierzchołków i dla algorytmu szukania sąsiadów który jest o(k) mamy złożoność o(k^2) warto jeszcze dodać że moja implementacja nie jest idealnie zoptymalizowana, przy powrocie do odwiedzonych już wierzchołków ponownie szukamy ich sąsiadów co dla wielkich grafów może zdecydowanie spowolnić algorytm. Rekurencyjna opcja tego algorytmy (choć też nie koniecznie idealna po wezwanie rekurencji nie było by na końcu więc kompilator nie koniecznie byłby w stanie ją rozwinąć) lub zapisywanie sąsiadów (tutaj znowu wzrosła by złożoność pamięciowa) zniwelowały by ten problem, reprezentacja grafu za pomocą listy sąsiedztwa również by pomogła (zakładając że tam możemy dostać listę sąsiadów w o(1))
+dla każdego wierzchołka musimy znaleźć wszystkich jego sąsiadów dla k wierzchołków i dla algorytmu szukania sąsiadów który jest o(k) mamy złożoność o(k^2)
+
+<!-- warto jeszcze dodać że moja implementacja nie jest idealnie zoptymalizowana, przy powrocie do odwiedzonych już wierzchołków ponownie szukamy ich sąsiadów co dla wielkich grafów może zdecydowanie spowolnić algorytm. Rekurencyjna opcja tego algorytmy (choć też nie koniecznie idealna po wezwanie rekurencji nie było by na końcu więc kompilator nie koniecznie byłby w stanie ją rozwinąć) lub zapisywanie sąsiadów (tutaj znowu wzrosła by złożoność pamięciowa) zniwelowały by ten problem, reprezentacja grafu za pomocą listy sąsiedztwa również by pomogła (zakładając że tam możemy dostać listę sąsiadów w o(1)) -->
 
 ### złożoność pamięciowa
 
