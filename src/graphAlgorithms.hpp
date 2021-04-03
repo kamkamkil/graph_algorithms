@@ -340,8 +340,6 @@ std::vector<size_t> topological_sorting(Graph<V, E> &graph)
     return result;
 }
 
-
-
 /**
  * @brief zwraca domknięcie przechodnie liczone metodą Floyda-Warshalla
  * 
@@ -355,12 +353,12 @@ std::vector<std::vector<bool>> transitiveClosure(Graph<V, E> &graph)
     for (size_t i = 0; i < graph.nrOfVertices(); i++)
     {
         auto nei = graph.neighbours(i);
-        for(auto var : nei)
-            result[i][var] = true;   
+        for (auto var : nei)
+            result[i][var] = true;
         result[i][i] = true;
     }
 
-    for (size_t a = 0; a < graph.nrOfVertices() ; a++)
+    for (size_t a = 0; a < graph.nrOfVertices(); a++)
     {
         for (size_t i = 0; i < graph.nrOfVertices(); i++)
         {
@@ -372,4 +370,84 @@ std::vector<std::vector<bool>> transitiveClosure(Graph<V, E> &graph)
     }
 
     return result;
+}
+
+/**
+ * @brief struktura opisująca typcyklu  grafu
+ * 
+ */
+struct graphCycleType
+{
+    /**
+     * @brief prawda jeżeli cykl jest hamiltonoski
+     * 
+     */
+    bool hamiltonian;
+    /**
+     * @brief prawda jeżeli cykl jest Eulerowski
+     * 
+     */
+    bool euler;
+};
+
+/**
+ * @brief funkcja sprawdza czy graf ma jakieś cykle oraz jeżeli je ma to jakiego typu one są  
+ * 
+ * @param graph graf w którym szukamy cyklu
+ * @return std::pair<graphCycleType,std::vector<size_t>> (jaki tym cyklu, ścieżka cyklu, jeżeli ma długość 0 znaczy że nie ma cyklu) 
+ */
+template <typename V, typename E>
+// std::pair<graphCycleType, std::vector<size_t>> graphCycle(Graph<V, E> &graph)
+void graphCycle(Graph<V, E> &graph)
+{
+    std::vector<bool> visited_global(graph.nrOfVertices(), false);
+    size_t current = 0;
+    while (std::any_of(visited_global.begin(), visited_global.end(), [](int i) { return i == false; }))
+    {
+        std::stack<size_t> work_s;
+        std::vector<size_t> visited;
+        for (size_t i = 0; i < visited_global.size(); i++)
+        {
+            if (!visited_global[i])
+            {
+                current = i;
+                break;
+            }
+        }
+        visited.push_back(current);
+        while (!visited.empty())
+        {
+            current = visited.back();
+            auto nei = graph.neighbours(current);
+            for (auto n : nei)
+                if (std::find(visited.begin(), visited.end() ,n) != visited.end()) 
+                {
+                    std::cout << "znalezono cykl !!!!!" << std::endl;
+                   
+                    return;
+                }
+            if (!nei.empty())
+            {
+                bool test = true;
+                for (auto n : nei)
+                {
+                    if (!visited_global[n])
+                    {
+                        test = false;
+                        visited.push_back(n);
+                    }
+                }
+                if (test) 
+                {
+                    visited_global[current] = true;
+                    visited.pop_back();
+                }
+            }
+            else
+            {
+                visited_global[current] = true;
+                visited.pop_back();
+            }
+        }
+    }
 }
