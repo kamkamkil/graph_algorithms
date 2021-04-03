@@ -322,7 +322,7 @@ std::vector<size_t> topological_sorting(Graph<V, E> &graph)
                         work_s.push(n);
                     }
                 }
-                if (test) // sąsiedzi byli odwiedzeni jak dobrze rozumiem to jak jeden sąsiad był odwiedzony to wszyscy byli
+                if (test)
                 {
                     visited[current] = true;
                     result.push_back(current);
