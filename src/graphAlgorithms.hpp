@@ -419,13 +419,36 @@ void graphCycle(Graph<V, E> &graph)
         {
             current = visited.back();
             auto nei = graph.neighbours(current);
+            // znaleźliśmy pętle
             for (auto n : nei)
-                if (std::find(visited.begin(), visited.end() ,n) != visited.end()) 
+            {
+                auto start_it = std::find(visited.begin(), visited.end(), n);
+                if (start_it != visited.end())
                 {
+                    if (start_it != visited.begin())
+                        visited.erase(visited.begin(), start_it);
+                    std::vector<size_t> toDelate;
                     std::cout << "znalezono cykl !!!!!" << std::endl;
-                   
+                    for (size_t i = 0; i < visited.size(); i++)
+                    {
+                        auto it = ++graph.beginDFS(visited[i]);
+                        while (it != graph.endDFS())
+                        {
+                            if (std::find(visited.begin() + i + 1, visited.end(), (*it)) == visited.end())
+                            {
+                                toDelate.push_back(i);
+                                break;
+                            }
+                            it++;
+                        }
+                    }
+                    for (auto var : toDelate)
+                    {
+                        std::cout << var << std::endl;
+                    }
                     return;
                 }
+            }
             if (!nei.empty())
             {
                 bool test = true;
@@ -437,7 +460,7 @@ void graphCycle(Graph<V, E> &graph)
                         visited.push_back(n);
                     }
                 }
-                if (test) 
+                if (test)
                 {
                     visited_global[current] = true;
                     visited.pop_back();
