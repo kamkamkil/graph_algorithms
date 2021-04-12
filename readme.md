@@ -66,7 +66,7 @@ Sam algorytm (nie licząc grafu) do pracy wymaga :
 
 size_t w c++ ma wielkość co najmniej 16 bitów, tyle też przyjmę, zakładam tez że stos jak i wektor to wydzielony blok pamięci o danej długości w takim przypadku złożoność to k * 1 + k * 16 + k * 16 + w * 16 = k * 33 + w * 16
 
-## zad 10
+## zad 10 domknięcie przechodnie liczone metodą Floyda-Warshalla
 
 ### opis  algorytmu
 
