@@ -270,11 +270,11 @@ TEST_CASE("transitive_Closure")
             size_t temp = std::count(tc[i].begin(), tc[i].end(), true);
             for (auto dfs = g.beginDFS(i); dfs != g.endDFS(); dfs++)
             {
-                CHECK(tc[i][dfs.id()]);
+                REQUIRE(tc[i][dfs.id()]);
                 if (tc[i][dfs.id()])
                     temp--;
             }
-            CHECK(temp == 0);
+            REQUIRE(temp == 0);
         }
     }
     SECTION("bigger_graph")
@@ -349,8 +349,10 @@ TEST_CASE("cycle")
         g.insertEdge(7, 8);
         g.insertEdge(8, 3);
         g.insertEdge(9, 0);
-        std::cout << "1------------------------" << std::endl;
-        graphCycle(g);
+        auto result = graphCycle(g);
+        REQUIRE(result.first.hamiltonian == false);
+        REQUIRE(result.first.euler == false);
+        REQUIRE(result.second == std::vector<size_t>({3, 4, 5, 6, 7, 8}));
     }
     SECTION("line")
     {
@@ -363,10 +365,10 @@ TEST_CASE("cycle")
         g.insertEdge(6, 7);
         g.insertEdge(7, 8);
         g.insertEdge(8, 9);
-        std::cout << "2---------------" << std::endl;
-        g.exportToDot("../../2.dot");
-
-        graphCycle(g);
+        auto result = graphCycle(g);
+        REQUIRE(result.first.hamiltonian == false);
+        REQUIRE(result.first.euler == false);
+        REQUIRE(result.second == std::vector<size_t>({}));
     }
     SECTION("tree")
     {
@@ -379,9 +381,10 @@ TEST_CASE("cycle")
         g.insertEdge(2, 7);
         g.insertEdge(7, 8);
         g.insertEdge(7, 9);
-        g.exportToDot("../../3.dot");
-        std::cout << "3---------------" << std::endl;
-        graphCycle(g);
+        auto result = graphCycle(g);
+        REQUIRE(result.first.hamiltonian == false);
+        REQUIRE(result.first.euler == false);
+        REQUIRE(result.second == std::vector<size_t>({}));
     }
     SECTION("many_loop")
     {
@@ -393,9 +396,10 @@ TEST_CASE("cycle")
         g.insertEdge(4, 5);
         g.insertEdge(5, 6);
         g.insertEdge(6, 0);
-        g.exportToDot("../../4.dot");
-        std::cout << "4--------------" << std::endl;
-        graphCycle(g);
+        auto result = graphCycle(g);
+        REQUIRE(result.first.hamiltonian == false);
+        REQUIRE(result.first.euler == false);
+        REQUIRE(result.second == std::vector<size_t>({0, 1, 2, 5, 6}));
     }
     SECTION("complicated_loop")
     {
@@ -408,10 +412,10 @@ TEST_CASE("cycle")
         g.insertEdge(2, 7);
         g.insertEdge(1, 8);
         g.insertEdge(8, 9);
-        g.exportToDot("../../5.dot");
-
-        std::cout << "5----------------" << std::endl;
-        graphCycle(g);
+        auto result = graphCycle(g);
+        REQUIRE(result.first.hamiltonian == false);
+        REQUIRE(result.first.euler == false);
+        REQUIRE(result.second == std::vector<size_t>({0, 1, 2, 7}));
     }
     SECTION("very_complicated_loop")
     {
@@ -435,19 +439,19 @@ TEST_CASE("cycle")
         g.insertEdge(1, 8);
         g.insertEdge(8, 9);
         g.insertEdge(7, 10);
-        g.insertEdge(10,12 );
-        g.insertEdge(10,13 );
-        g.insertEdge(10,14 );
-        g.insertEdge(13,15 );
+        g.insertEdge(10, 12);
+        g.insertEdge(10, 13);
+        g.insertEdge(10, 14);
+        g.insertEdge(13, 15);
         g.insertEdge(13, 16);
         g.insertEdge(13, 17);
-        g.insertEdge(16,18 );
+        g.insertEdge(16, 18);
         g.insertEdge(13, 19);
-        g.insertEdge(19,0 );
-        g.exportToDot("../../6.dot");
-
-        std::cout << "6----------------" << std::endl;
-        graphCycle(g);
+        g.insertEdge(19, 0);
+        auto result = graphCycle(g);
+        REQUIRE(result.first.hamiltonian == false);
+        REQUIRE(result.first.euler == false);
+        REQUIRE(result.second == std::vector<size_t>({0, 1, 2, 7, 10, 13, 19}));
     }
     SECTION("loop_alternative_road")
     {
@@ -462,14 +466,27 @@ TEST_CASE("cycle")
         g.insertEdge(8, 9);
         g.insertEdge(7, 9);
         g.insertEdge(9, 0);
-
-
-
-        g.exportToDot("../../7.dot");
-
-        std::cout << "7----------------" << std::endl;
-        graphCycle(g);
-
+        auto result = graphCycle(g);
+        REQUIRE(result.first.hamiltonian == false);
+        REQUIRE(result.first.euler == false);
+        REQUIRE(result.second == std::vector<size_t>({0, 1, 2, 3, 4, 5, 6, 8, 9}));
+    }
+    SECTION("loop_hamiltonian_and_euler")
+    {
+        g.insertEdge(0, 1);
+        g.insertEdge(1, 2);
+        g.insertEdge(2, 3);
+        g.insertEdge(3, 4);
+        g.insertEdge(4, 5);
+        g.insertEdge(5, 6);
+        g.insertEdge(6, 7);
+        g.insertEdge(7, 8);
+        g.insertEdge(8, 9);
+        g.insertEdge(9, 0);
+        auto result = graphCycle(g);
+        g.exportToDot("../../2.dot");
+        REQUIRE(result.first.hamiltonian == true);
+        REQUIRE(result.first.euler == true);
+        REQUIRE(result.second == std::vector<size_t>({0,1,2,3,4,5,6,7,8,9}));
     }
 }
-
