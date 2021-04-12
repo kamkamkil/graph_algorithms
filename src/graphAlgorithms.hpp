@@ -391,14 +391,13 @@ struct graphCycleType
 };
 
 /**
- * @brief funkcja sprawdza czy graf ma jakieś cykle oraz jeżeli je ma to jakiego typu one są  
+ * @brief funkcja sprawdza czy graf ma jakieś cykle proste oraz jeżeli je ma to jakiego typu one są  
  * 
  * @param graph graf w którym szukamy cyklu
  * @return std::pair<graphCycleType,std::vector<size_t>> (jaki tym cyklu, ścieżka cyklu, jeżeli ma długość 0 znaczy że nie ma cyklu) 
  */
 template <typename V, typename E>
-// std::pair<graphCycleType, std::vector<size_t>> graphCycle(Graph<V, E> &graph)
-void graphCycle(Graph<V, E> &graph)
+std::pair<graphCycleType, std::vector<size_t>> graphCycle(Graph<V, E> &graph)
 {
     std::vector<bool> visited_global(graph.nrOfVertices(), false);
     size_t current = 0;
@@ -406,6 +405,7 @@ void graphCycle(Graph<V, E> &graph)
     {
         std::stack<size_t> work_s;
         std::vector<size_t> visited;
+        std::vector<size_t> all;
         for (size_t i = 0; i < visited_global.size(); i++)
         {
             if (!visited_global[i])
@@ -419,7 +419,6 @@ void graphCycle(Graph<V, E> &graph)
         {
             current = visited.back();
             auto nei = graph.neighbours(current);
-            // znaleźliśmy pętle
             for (auto n : nei)
             {
                 auto start_it = std::find(visited.begin(), visited.end(), n);
@@ -428,25 +427,27 @@ void graphCycle(Graph<V, E> &graph)
                     if (start_it != visited.begin())
                         visited.erase(visited.begin(), start_it);
                     std::vector<size_t> toDelate;
-                    std::cout << "znalezono cykl !!!!!" << std::endl;
-                    for (size_t i = 0; i < visited.size(); i++)
+                    size_t i = visited.size() - 1;
+                    size_t k = 1;
+                    while (i > 0)
                     {
-                        auto it = ++graph.beginDFS(visited[i]);
-                        while (it != graph.endDFS())
+                        auto neighbours = graph.neighbours(visited[i - k]);
+                        if (std::find(neighbours.begin(), neighbours.end(), visited[i]) == neighbours.end())
                         {
-                            if (std::find(visited.begin() + i + 1, visited.end(), (*it)) == visited.end())
-                            {
-                                toDelate.push_back(i);
+                            toDelate.push_back(i - k);
+                            k++;
+                            if (i - k < 0)
                                 break;
-                            }
-                            it++;
+                        }
+                        else
+                        {
+                            i -= k;
+                            k = 1;
                         }
                     }
-                    for (auto var : toDelate)
-                    {
-                        std::cout << var << std::endl;
-                    }
-                    return;
+                    bool hamiltonian = visited.size() == graph.nrOfVertices();
+                    bool euler= visited.size() == graph.nrOfEdges() - 1;
+                    return {{hamiltonian, euler}, visited};
                 }
             }
             if (!nei.empty())
@@ -464,13 +465,16 @@ void graphCycle(Graph<V, E> &graph)
                 {
                     visited_global[current] = true;
                     visited.pop_back();
+                    all.push_back(current);
                 }
             }
             else
             {
                 visited_global[current] = true;
                 visited.pop_back();
+                all.push_back(current);
             }
         }
     }
+    return {{false, false}, std::vector<size_t>()};
 }
