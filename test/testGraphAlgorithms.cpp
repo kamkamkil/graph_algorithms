@@ -349,7 +349,7 @@ TEST_CASE("cycle")
         g.insertEdge(7, 8);
         g.insertEdge(8, 3);
         g.insertEdge(9, 0);
-        std::cout << "1" << std::endl;
+        std::cout << "1------------------------" << std::endl;
         graphCycle(g);
     }
     SECTION("line")
@@ -363,7 +363,9 @@ TEST_CASE("cycle")
         g.insertEdge(6, 7);
         g.insertEdge(7, 8);
         g.insertEdge(8, 9);
-        std::cout << "2" << std::endl;
+        std::cout << "2---------------" << std::endl;
+        g.exportToDot("../../2.dot");
+
         graphCycle(g);
     }
     SECTION("tree")
@@ -377,7 +379,8 @@ TEST_CASE("cycle")
         g.insertEdge(2, 7);
         g.insertEdge(7, 8);
         g.insertEdge(7, 9);
-        std::cout << "3" << std::endl;
+        g.exportToDot("../../3.dot");
+        std::cout << "3---------------" << std::endl;
         graphCycle(g);
     }
     SECTION("many_loop")
@@ -390,21 +393,83 @@ TEST_CASE("cycle")
         g.insertEdge(4, 5);
         g.insertEdge(5, 6);
         g.insertEdge(6, 0);
-        std::cout << "3" << std::endl;
+        g.exportToDot("../../4.dot");
+        std::cout << "4--------------" << std::endl;
         graphCycle(g);
     }
     SECTION("complicated_loop")
     {
         g.insertEdge(0, 1);
         g.insertEdge(1, 2);
-        g.insertEdge(2, 3);
-        g.insertEdge(3, 0);
+        g.insertEdge(2, 7);
+        g.insertEdge(7, 0);
         g.insertEdge(0, 4);
         g.insertEdge(0, 5);
         g.insertEdge(2, 7);
         g.insertEdge(1, 8);
         g.insertEdge(8, 9);
-        std::cout << "4" << std::endl;
+        g.exportToDot("../../5.dot");
+
+        std::cout << "5----------------" << std::endl;
         graphCycle(g);
     }
+    SECTION("very_complicated_loop")
+    {
+        g.insertVertex(0);
+        g.insertVertex(1);
+        g.insertVertex(2);
+        g.insertVertex(3);
+        g.insertVertex(4);
+        g.insertVertex(5);
+        g.insertVertex(6);
+        g.insertVertex(7);
+        g.insertVertex(8);
+        g.insertVertex(9);
+
+        g.insertEdge(0, 1);
+        g.insertEdge(1, 2);
+        g.insertEdge(2, 7);
+        g.insertEdge(0, 4);
+        g.insertEdge(0, 5);
+        g.insertEdge(2, 7);
+        g.insertEdge(1, 8);
+        g.insertEdge(8, 9);
+        g.insertEdge(7, 10);
+        g.insertEdge(10,12 );
+        g.insertEdge(10,13 );
+        g.insertEdge(10,14 );
+        g.insertEdge(13,15 );
+        g.insertEdge(13, 16);
+        g.insertEdge(13, 17);
+        g.insertEdge(16,18 );
+        g.insertEdge(13, 19);
+        g.insertEdge(19,0 );
+        g.exportToDot("../../6.dot");
+
+        std::cout << "6----------------" << std::endl;
+        graphCycle(g);
+    }
+    SECTION("loop_alternative_road")
+    {
+        g.insertEdge(0, 1);
+        g.insertEdge(1, 2);
+        g.insertEdge(2, 3);
+        g.insertEdge(3, 4);
+        g.insertEdge(4, 5);
+        g.insertEdge(5, 6);
+        g.insertEdge(6, 7);
+        g.insertEdge(6, 8);
+        g.insertEdge(8, 9);
+        g.insertEdge(7, 9);
+        g.insertEdge(9, 0);
+
+
+
+        g.exportToDot("../../7.dot");
+
+        std::cout << "7----------------" << std::endl;
+        graphCycle(g);
+
+    }
 }
+
