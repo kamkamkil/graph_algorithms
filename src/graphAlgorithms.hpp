@@ -445,8 +445,13 @@ std::pair<graphCycleType, std::vector<size_t>> graphCycle(Graph<V, E> &graph)
                             k = 1;
                         }
                     }
+                    for (auto &&it : toDelate)
+                    {
+                        visited.erase(visited.begin() + it);
+                    }
+                    
                     bool hamiltonian = visited.size() == graph.nrOfVertices();
-                    bool euler= visited.size() == graph.nrOfEdges() - 1;
+                    bool euler = visited.size() == graph.nrOfEdges() ;
                     return {{hamiltonian, euler}, visited};
                 }
             }
