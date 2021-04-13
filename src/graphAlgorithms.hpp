@@ -405,7 +405,6 @@ std::pair<graphCycleType, std::vector<size_t>> graphCycle(Graph<V, E> &graph)
     {
         std::stack<size_t> work_s;
         std::vector<size_t> visited;
-        std::vector<size_t> all;
         for (size_t i = 0; i < visited_global.size(); i++)
         {
             if (!visited_global[i])
@@ -470,14 +469,12 @@ std::pair<graphCycleType, std::vector<size_t>> graphCycle(Graph<V, E> &graph)
                 {
                     visited_global[current] = true;
                     visited.pop_back();
-                    all.push_back(current);
                 }
             }
             else
             {
                 visited_global[current] = true;
                 visited.pop_back();
-                all.push_back(current);
             }
         }
     }
