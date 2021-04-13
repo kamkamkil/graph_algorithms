@@ -107,3 +107,38 @@ musi być wykonana k^3 razy gdzie k to ilość wierzchołków. warto jeszcze dod
 ### złożoność Pamięciowa
 
 potrzebujemy macierzy bool k na k więc złożoność pamięciowa to o(k^2)
+
+## Zadanie dodatkowe 1: przemytnicy
+
+### sposób rozumowania
+
+Ten problem można przedstawić w następujący sposób: szukamy takiego cyklu prostego przechodzącego przez konkretny wierzchołek która będzie najkrótsza wedle następującej metryki: suma długości krawędzi plus połowa wartości najtańszego wierzchołka problem ten można rozwiązać szukając wszystkich cykli prostych i następnie sprawdzić który z nich jest najkrótszy lub zastosować podobny algorytm do algorytmu Dijkstry.  
+Jak zastosowałem pierwszą metodę czyli znalazłem wszystkie cykle przechodzące przez wierzchołek zerowy i wybrałem najtańszą opcję, zrobiłem to w następujący sposób
+
+1. Stwórz wektor wektorów V i włóż do niego wektor zawierający wierzchołek 0
+
+2. Dla każdego wektora(V') w wektorze V znajdź sąsiadów wierzchołka znajdującego się na końcu wektora
+
+3. Jeżeli wierzchołek ma:
+
+    a. 0 sąsiadów: jeżeli ostatni wierzchołek jest inny niż 0 to dodaj ten wektor do listy wektorów do usunięcia
+
+    b. 1 sąsiada: jeżeli ten sąsiedni wierzchołek jest różny od wierzchołka 0 dodaj do tego wektora V' jego sąsiada
+
+    c. jeżeli ma więcej niż jednego sąsiada: dla każdego sąsiada nie będącego 0 utwórz kopie wektora V' i dodaj na koniec tego sąsiada, dodaj oryginał do listy do usunięcia
+
+4. Usuń z wektora elementy z listy do usunięcia (należy to robić w malejącej kolejności żeby nie invalidować tej listy)
+
+5. Powtarzaj punkty 2 - 4 aż w pętli nie zmodyfikujesz wektora V
+
+Następnie dla każdej pętli liczymy jej długość zliczając sumę długości krawędzi oraz dodając do niej połowę najtańszej wartości wierzchołka, do naszego wektora cen warto dodać jeszcze połowę ceny wierzchołka 0 na wypadek jakby to była najbardziej opłacalna trasa
+
+```c
+
+W zależności kiedy pan to będzie czytał niektóre z tych limitacji może będą już poprawionę 
+
+```
+
+### limitację rozwiązania
+
+Implementacja mojego rozwiązania na pewno nie jest idealna wektory V' które na pewno nie będą już dalej rozwijane dalej są brane pod uwagę (powinny zostać przeniesione do innego zbioru) do tego w przypadku 3a zamiast usuwać i dodawać wektory powinniśmy wykorzystać jeden już istniejący. Poza tym w mojej implementacji grafu szukanie sąsiadów jest dość kosztownę więc przechowywanie wcześniej obliczonych wartość np. w mapie również poprawiło by wydolność programu. 
