@@ -16,8 +16,12 @@ target_link_libraries(testGraph graph)
 add_executable(testGraphAlgorithms test/testGraphAlgorithms.cpp) 
 target_link_libraries(testGraphAlgorithms graph)
 
+add_library(przemytnicylib src/przemytnicylib.cpp)
+target_link_libraries(przemytnicylib graph)
+
 add_executable(przemytnicy src/przemytnicy.cpp)
-target_link_libraries(przemytnicy graph)
+target_link_libraries(przemytnicy przemytnicylib)
+
 
 
 add_test(testGraph testGraph)
