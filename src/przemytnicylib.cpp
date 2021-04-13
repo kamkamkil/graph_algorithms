@@ -134,8 +134,7 @@ std::pair<int, std::vector<size_t>> przemytnicyLazy(Graph<int, int> g)
  * @param g graf zdefiniowany zgodnie z treścią zadania
  * @return std::pair<int,std::vector<size_t>> {int najtańsza możliwa opcja, cykl}
  */
-// std::pair<int,std::vector<size_t>> przemytnicy(Graph<int,int> g)
-void przemytnicy(Graph<int, int> g)
+std::pair<int, std::vector<size_t>> przemytnicy(Graph<int, int> g)
 {
     class Path
     {
@@ -143,73 +142,78 @@ void przemytnicy(Graph<int, int> g)
         Graph<int, int> *g;
 
     public:
-        Path(Graph<int, int> *g_) : g(g_), path(0), length(0), cheapest(5000) {}
-        Path(Graph<int, int> *g_, size_t first) : g(g_), path(0), length(0), cheapest(0) { push_back(first); }
-        std::vector<size_t> path;
+        Path(Graph<int, int> *g_) : g(g_), path(1, 0), length(0), cheapest(5000) {}
+        Path(Graph<int, int> *g_, size_t first) : g(g_), path(1, 0), length(0), cheapest(5000) { push_back(first); }
         ~Path() = default;
+        std::vector<size_t> path;
+        bool full = false;
         unsigned int length;
         unsigned int cheapest;
         void push_back(size_t item)
         {
             path.push_back(item);
-            if (item < cheapest)
-                cheapest = item / 2;
+            if ((g->vertexData(item) / 2) < cheapest)
+                cheapest = g->vertexData(item) / 2;
             if (path.size() > 1)
                 length += g->edgeLabel(path[path.size() - 2], path[path.size() - 1]);
         }
         size_t back() { return path.back(); }
         unsigned int allCost() { return length + cheapest; }
+        std::vector<size_t> neighbours() { return g->neighbours(back()); }
+        bool checkFull() { return full || back() == 0; }
     };
     std::vector<Path> cycles;
     for (auto &&i : g.neighbours(0))
         cycles.push_back(Path(&g, i));
-    if (cycles.empty())
-        return; // !dodać wyjście
-
+    // if (cycles.empty())
+    //     return; // !dodać wyjście
+    bool everyPath = false;
     auto current = 0;
     while (true)
     {
-        auto nei = g.neighbours(cycles[0].back());
+        auto nei = cycles[current].neighbours();
         std::vector<size_t> toDelate;
-        switch (nei.size())
-        {
-        case 0:
-            // ! trzeba się zastanowić może to coś zepsuć
-            toDelate.push_back(current);
-            break;
-
-        case 1:
-            if (nei[0] != 0)
+        if (cycles[current].back() == 0) // jeżeli jedyny sąsiad to początek to pętla jest już skończona
+            cycles[current].full = true;
+        else
+            switch (nei.size())
             {
+            case 0:
+                // tutaj nie ma sąsiadów więc na pewno nie jest częścią pętli
+                toDelate.push_back(current);
+                break;
+
+            case 1:
                 cycles[current].push_back(nei[0]);
-            }
-            else
-            {
-                //! tu by się przydało to trzeba coś zrobić w celu przyspieszenia
-            }
-            break;
-
-        default:
-            // bool test = true;
-            for (auto &&n : nei)
-            {
-                //! tutaj by się przydało to przypieszyć aby nie usuwać tego wektora
-                if (n != 0)
+                break;
+            default:
+                for (auto n : nei)
                 {
                     cycles.push_back(Path(cycles[current]));
                     cycles.back().push_back(n);
                 }
-                else
-                {
-                    //! tu by się przydało to trzeba coś zrobić w celu przyspieszenia
-                }
                 toDelate.push_back(current);
+                break;
             }
-            break;
-
-            // for (auto it = toDelate.rbegin(); it != toDelate.rend(); it++)
-                cycles.erase(cycles.begin());
-            
+        for (auto it = toDelate.rbegin(); it != toDelate.rend(); it++)
+            cycles.erase(cycles.begin() + *it);
+        bool test = true;
+        int next = current;
+        for (size_t i = 0; i < cycles.size(); i++)
+        {
+            if (!cycles[i].full && cycles[i].allCost() < cycles[next].length)
+            {
+                next = i;
+                test = false;
+            }
         }
+        if (next == current && cycles[current].checkFull())
+            return {cycles[current].allCost(), cycles[current].path};
+        else if (std::all_of(cycles.begin(),cycles.end(),[](Path &p) {return p.checkFull();}))
+        {
+            auto result = std::min_element(cycles.begin(), cycles.end(), [](Path p1, Path p2) { return p1.allCost() < p2.allCost(); });
+            return {(*result).allCost(), (*result).path};
+        }
+        current = next;
     }
 }
