@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include <utility>
 #include "graph.hpp"
 
 /**
@@ -26,7 +27,6 @@ Graph<int, int> przemytnicyLoadData(std::string fileName)
         }
         else if (n <= amount)
         {
-            // price.push_back(std::stoi(s));
             g.insertVertex(std::stoi(s));
         }
         else if (n == amount + 1)
@@ -43,13 +43,14 @@ Graph<int, int> przemytnicyLoadData(std::string fileName)
     return g;
 }
 
+
 /**
  * @brief wykonuje zadanie "przemytnicy"
  * 
  * @param g graf zdefiniowany zgodnie z treścią zadania
- * @return int najtańsza możliwa opcja 
+ * @return std::pair<int,std::vector<size_t>> {int najtańsza możliwa opcja, cykl}
  */
-int przemytnicy(Graph<int,int> g)
+std::pair<int,std::vector<size_t>> przemytnicy(Graph<int,int> g)
 {
     std::vector<std::vector<size_t>> cycles;
     for (auto &&i : g.neighbours(0))
@@ -115,5 +116,6 @@ int przemytnicy(Graph<int,int> g)
         price[i] += (g.vertexData((*std::min_element(cycles[i].begin(), cycles[i].end(), [&](size_t a, size_t b) -> bool { return g.vertexData(a) < g.vertexData(b); })))) / 2;
     }
     price.push_back(g.vertexData(0) / 2);
-    return (*std::min_element(price.begin(), price.end()));
+    auto result = std::min_element(price.begin(), price.end());
+    return {*result,*result != price.back() ? cycles[result - price.begin()] : std::vector<size_t>{}};
 }
