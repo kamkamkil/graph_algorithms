@@ -5,19 +5,6 @@
 
 #include "graph.hpp"
 
-// std::vector<std::string> split(const std::string &s, char delim)
-// {
-//     std::vector<std::string> result;
-//     std::stringstream ss(s);
-//     std::string item;
-
-//     while (std::getline(ss, item, delim))
-//     {
-//         result.push_back(item);
-//     }
-
-//     return result;
-// }
 
 int main(int argc, char const *argv[])
 {
@@ -28,11 +15,10 @@ int main(int argc, char const *argv[])
     // }
     Graph<int, int> g;
     std::string s;
-    // std::ifstream file(argv[1]);
-    std::ifstream file("data_p.txt"); //! DEBUG
+    std::ifstream file(argv[1]);
+    // std::ifstream file("data_p.txt"); //! DEBUG
     int n = 0;
     int amount;
-    // std::vector<int> price;
     while (std::getline(file, s))
     {
         if (n == 0)
@@ -52,7 +38,6 @@ int main(int argc, char const *argv[])
         {
             auto nr = split(s, ' ');
             g.insertEdge(std::stoi(nr[0]) - 1, std::stoi(nr[1]) - 1, std::stoi(nr[2]));
-            //  std::cout << std::stoi(nr[0]) - 1 << "  " << std::stoi(nr[1]) - 1 << "    " << std::stoi(nr[2]) << std::endl;
         }
         n++;
     }
@@ -123,6 +108,7 @@ int main(int argc, char const *argv[])
         price[i] += g.edgeLabel(cycles[i].back(),0);
         price[i] += (g.vertexData((*std::min_element(cycles[i].begin(),cycles[i].end(),[&](size_t a,size_t b) -> bool {return g.vertexData(a) < g.vertexData(b); })))) / 2;
     }
+    price.push_back(g.vertexData(0) / 2);
     std::cout << *std::min_element(price.begin(),price.end()) << std::endl;
     
     return 0;
