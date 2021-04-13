@@ -22,10 +22,12 @@ target_link_libraries(przemytnicylib graph)
 add_executable(przemytnicy src/przemytnicy.cpp)
 target_link_libraries(przemytnicy przemytnicylib)
 
-
+add_executable(testprzemytnicy test/testPrzemytnicy.cpp)
+target_link_libraries(testprzemytnicy przemytnicylib)
 
 add_test(testGraph testGraph)
 add_test(testGraphAlgorithms testGraphAlgorithms)
+add_test(testprzemytnicy testprzemytnicy)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
