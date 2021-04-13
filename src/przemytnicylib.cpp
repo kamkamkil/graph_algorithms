@@ -43,14 +43,15 @@ Graph<int, int> przemytnicyLoadData(std::string fileName)
     return g;
 }
 
-
 /**
  * @brief wykonuje zadanie "przemytnicy"
+ * 
+ * UWAGA nie wspiera grafów z pętlami nie będącymy częscią 0
  * 
  * @param g graf zdefiniowany zgodnie z treścią zadania
  * @return std::pair<int,std::vector<size_t>> {int najtańsza możliwa opcja, cykl}
  */
-std::pair<int,std::vector<size_t>> przemytnicy(Graph<int,int> g)
+std::pair<int, std::vector<size_t>> przemytnicyLazy(Graph<int, int> g)
 {
     std::vector<std::vector<size_t>> cycles;
     for (auto &&i : g.neighbours(0))
@@ -107,11 +108,11 @@ std::pair<int,std::vector<size_t>> przemytnicy(Graph<int,int> g)
     }
     // poniższa linijka upewnia nas że na pewno wszystkie cykle są poprawne inaczej nie przechodzi testu TEST_CASE("many_dead_ends")
     cycles.erase(
-        std::remove_if(cycles.begin(),cycles.end(),[&](std::vector<size_t> v){
+        std::remove_if(cycles.begin(), cycles.end(), [&](std::vector<size_t> v) {
             auto t = g.neighbours(v.back());
-        return std::find(t.begin(),t.end(),0) == t.end();
-        })
-        ,cycles.end());
+            return std::find(t.begin(), t.end(), 0) == t.end();
+        }),
+        cycles.end());
     std::vector<size_t> price(cycles.size(), 0);
     for (size_t i = 0; i < cycles.size(); i++)
     {
@@ -124,5 +125,91 @@ std::pair<int,std::vector<size_t>> przemytnicy(Graph<int,int> g)
     }
     price.push_back(g.vertexData(0) / 2);
     auto result = std::min_element(price.begin(), price.end());
-    return {*result,*result != price.back() ? cycles[result - price.begin()] : std::vector<size_t>{}};
+    return {*result, *result != price.back() ? cycles[result - price.begin()] : std::vector<size_t>{}};
+}
+
+/**
+ * @brief wykonuje zadanie "przemytnicy"
+ * 
+ * @param g graf zdefiniowany zgodnie z treścią zadania
+ * @return std::pair<int,std::vector<size_t>> {int najtańsza możliwa opcja, cykl}
+ */
+// std::pair<int,std::vector<size_t>> przemytnicy(Graph<int,int> g)
+void przemytnicy(Graph<int, int> g)
+{
+    class Path
+    {
+    private:
+        Graph<int, int> *g;
+
+    public:
+        Path(Graph<int, int> *g_) : g(g_), path(0), length(0), cheapest(5000) {}
+        Path(Graph<int, int> *g_, size_t first) : g(g_), path(0), length(0), cheapest(0) { push_back(first); }
+        std::vector<size_t> path;
+        ~Path() = default;
+        unsigned int length;
+        unsigned int cheapest;
+        void push_back(size_t item)
+        {
+            path.push_back(item);
+            if (item < cheapest)
+                cheapest = item / 2;
+            if (path.size() > 1)
+                length += g->edgeLabel(path[path.size() - 2], path[path.size() - 1]);
+        }
+        size_t back() { return path.back(); }
+        unsigned int allCost() { return length + cheapest; }
+    };
+    std::vector<Path> cycles;
+    for (auto &&i : g.neighbours(0))
+        cycles.push_back(Path(&g, i));
+    if (cycles.empty())
+        return; // !dodać wyjście
+
+    auto current = 0;
+    while (true)
+    {
+        auto nei = g.neighbours(cycles[0].back());
+        std::vector<size_t> toDelate;
+        switch (nei.size())
+        {
+        case 0:
+            // ! trzeba się zastanowić może to coś zepsuć
+            toDelate.push_back(current);
+            break;
+
+        case 1:
+            if (nei[0] != 0)
+            {
+                cycles[current].push_back(nei[0]);
+            }
+            else
+            {
+                //! tu by się przydało to trzeba coś zrobić w celu przyspieszenia
+            }
+            break;
+
+        default:
+            // bool test = true;
+            for (auto &&n : nei)
+            {
+                //! tutaj by się przydało to przypieszyć aby nie usuwać tego wektora
+                if (n != 0)
+                {
+                    cycles.push_back(Path(cycles[current]));
+                    cycles.back().push_back(n);
+                }
+                else
+                {
+                    //! tu by się przydało to trzeba coś zrobić w celu przyspieszenia
+                }
+                toDelate.push_back(current);
+            }
+            break;
+
+            // for (auto it = toDelate.rbegin(); it != toDelate.rend(); it++)
+                cycles.erase(cycles.begin());
+            
+        }
+    }
 }
