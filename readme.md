@@ -32,7 +32,7 @@ cmake ..
 
 teraz mamy już wygenerowany naż makefile, wystarczy wpisać make i nasz program zostanie skompilowany, pliki wykonywalne będą znajdować się w folderze build.
 
-Jeżeli chcemy tyko sprawdzić czy testy poprawnie są wykonywane możemy będąc w pliku build wpisać `ctest`
+Jeżeli chcemy tyko sprawdzić czy testy poprawnie są wykonywane możemy będąc w pliku build wpisać `ctest` (działa po skompilowaniu programu)
 
 ## zad 5 topologiczne sortowanie wierzchołków
 
@@ -141,4 +141,4 @@ W zależności kiedy pan to będzie czytał niektóre z tych limitacji może bę
 
 ### limitację rozwiązania
 
-Implementacja mojego rozwiązania na pewno nie jest idealna wektory V' które na pewno nie będą już dalej rozwijane dalej są brane pod uwagę (powinny zostać przeniesione do innego zbioru) do tego w przypadku 3a zamiast usuwać i dodawać wektory powinniśmy wykorzystać jeden już istniejący. Poza tym w mojej implementacji grafu szukanie sąsiadów jest dość kosztownę więc przechowywanie wcześniej obliczonych wartość np. w mapie również poprawiło by wydolność programu. 
+Implementacja mojego rozwiązania na pewno nie jest idealna wektory V' które na pewno nie będą już dalej rozwijane dalej są brane pod uwagę (powinny zostać przeniesione do innego zbioru) do tego w przypadku 3a zamiast usuwać i dodawać wektory powinniśmy wykorzystać jeden już istniejący. Poza tym w mojej implementacji grafu szukanie sąsiadów jest dość kosztownę więc przechowywanie wcześniej obliczonych wartość np. w mapie również poprawiło by wydolność programu. Dodatkowo test "many_dead_ends" ujawnił że algorytm podstawowy nie zawsze usuwa wszystkie niepoprawne cykle.
