@@ -105,6 +105,13 @@ std::pair<int,std::vector<size_t>> przemytnicy(Graph<int,int> g)
         for (auto it = toDelate.rbegin(); it != toDelate.rend(); it++)
             cycles.erase(cycles.begin() + *it);
     }
+    // poniższa linijka upewnia nas że na pewno wszystkie cykle są poprawne inaczej nie przechodzi testu TEST_CASE("many_dead_ends")
+    cycles.erase(
+        std::remove_if(cycles.begin(),cycles.end(),[&](std::vector<size_t> v){
+            auto t = g.neighbours(v.back());
+        return std::find(t.begin(),t.end(),0) == t.end();
+        })
+        ,cycles.end());
     std::vector<size_t> price(cycles.size(), 0);
     for (size_t i = 0; i < cycles.size(); i++)
     {
