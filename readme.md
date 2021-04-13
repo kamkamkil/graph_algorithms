@@ -66,6 +66,24 @@ Sam algorytm (nie licząc grafu) do pracy wymaga :
 
 size_t w c++ ma wielkość co najmniej 16 bitów, tyle też przyjmę, zakładam tez że stos jak i wektor to wydzielony blok pamięci o danej długości w takim przypadku złożoność to k * 1 + k * 16 + k * 16 + w * 16 = k * 33 + w * 16
 
+## zad 7 szukanie cyklu w grafie
+
+### Opis Algorytmu
+
+Moją implementacje Algorytmu szukania cyklu w grafie można podzielić na dwa etapy w pierwszym etapie sprawdzamy czy graf ma pętlę a w drugim "czyścimy stos". Pierwszy polega na przeszukaniu grafu algorytmem DFS i sprawdzaniem czy z danego elementu możemy wrócić do niego samego. Później usuwamy z stosu elementy nie należące do naszej cyklu: idąc po kolej od ostatniego elementu do pierwszego sprawdzamy czy z poprzedniego można dojść do następnego jeżeli nie do usuwamy go z stosu. Sprawdzanie czy cykl jest graf jest Hamiltonoski polega na porównaniu długości cyklu i ilość wierzchołków w grafie, sprawdzenie czy cykl jest Euleroski polega na sprawdzeniu czy długość cyklu jest równa ilość krawędzi grafu (ten test jest wystarczający ponieważ algorytm wyszukuje tylko cykle proste więc jego długość jest równo ilość krawędzi jaką zawiera)
+
+### Opis testów
+
+Testy do tego algorytmu polegają na podaniu danych o różnej złożoności i dosłownym sprawdzeniu czy wyniki się zgadzają, możemy tak zrobić ponieważ funkcję można uznać za "czystą" tzn. że dla tych samych danych zawsze da nam ten sam wynik. Jeżeli nie znalibyśmy dobrego wyniku i chcielibyśmy sprawdzić poprawność naszego algorytmu moglibyśmy sprawdzić czy kolejne elementy cyklu są swoimi sąsiadami oraz czy pętla jej poprawna (ostatni element jest sąsiadem pierwszego).
+
+### Złożoność obliczeniowa
+
+Algorytm można podzielić na dwie części : sprawdzenie czy graf ma pętlę polega na wywołaniu przeszukiwania DFS w najgorszym wypadku na każdym elemencie (złożoność O(V + E) (v - ilość wierzchołków E - ilość krawędzi)). Do "wyczyszczenia" Stosu musimy wywołać sprawdzeni sąsiadów na każdym z elementów cyklu więc będzie to O(V^2), ponieważ w najgorszym przypadku cykl ma V elementów a w mojej implementacji grafu szukanie sąsiadów ma złożoność V.
+
+### Złożoność pamięciowa
+
+Do wykonania algorytmu potrzebujemy stosu size_t o max rozmiarze długości stosu (16 bit \* V) wektora odwiedzonych wierzchołków typu size_t (16 bit \* V) oraz wektora wierzchołków odwiedzonych globalnie (1 bit \* V).Do Czyszczenia potrzebujemy jeszcze wektora size_t który jest silnie mniejszy od ilości wierzchołków (16 bit \* V). W sumie O( 49 bit \* V ).
+
 ## zad 10 domknięcie przechodnie liczone metodą Floyda-Warshalla
 
 ### opis  algorytmu
@@ -74,7 +92,7 @@ algorytm jest bardzo podobny do algorytmu Floyda-Warshalla tutaj jednak zamiast 
 
 ### Opis Testów
 
-testy polegają na użyciu DFS aby sprawdzić wszystkie możliwe wieszchołki do których można się dostać
+testy polegają na użyciu DFS aby sprawdzić wszystkie możliwe wierzchołki do których można się dostać
 
 ### Złożoność  Obliczeniowa
 
