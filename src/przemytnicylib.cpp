@@ -152,7 +152,7 @@ std::pair<int, std::vector<size_t>> przemytnicy(Graph<int, int> g)
         void push_back(size_t item)
         {
             path.push_back(item);
-            if ((g->vertexData(item) / 2) < cheapest)
+            if ((unsigned int)(g->vertexData(item) / 2) < cheapest)
                 cheapest = g->vertexData(item) / 2;
             if (path.size() > 1)
                 length += g->edgeLabel(path[path.size() - 2], path[path.size() - 1]);
@@ -161,59 +161,92 @@ std::pair<int, std::vector<size_t>> przemytnicy(Graph<int, int> g)
         unsigned int allCost() { return length + cheapest; }
         std::vector<size_t> neighbours() { return g->neighbours(back()); }
         bool checkFull() { return full || back() == 0; }
+        static bool allCostComp (Path &p1, Path &p2) { return p1.allCost() < p2.allCost(); }
+        static bool lengthComp (Path &p1, Path &p2) { return p1.length < p2.length; }
     };
+
+
     std::vector<Path> cycles;
+    std::vector<Path> full;
     for (auto &&i : g.neighbours(0))
         cycles.push_back(Path(&g, i));
-    // if (cycles.empty())
-    //     return; // !dodać wyjście
+    if (cycles.empty())
+        return {(g.vertexData(0) / 2), std::vector<size_t>{}};
     bool everyPath = false;
-    auto current = 0;
+    auto current = cycles.begin();
     while (true)
     {
-        auto nei = cycles[current].neighbours();
-        std::vector<size_t> toDelate;
-        if (cycles[current].back() == 0) // jeżeli jedyny sąsiad to początek to pętla jest już skończona
-            cycles[current].full = true;
+        auto nei = (*current).neighbours();
+        if ((*current).back() == 0) // jeżeli jedyny sąsiad to początek to pętla jest już skończona
+        {
+            full.push_back(*current);
+            cycles.erase(current);
+        }
         else
             switch (nei.size())
             {
             case 0:
-                // tutaj nie ma sąsiadów więc na pewno nie jest częścią pętli
-                toDelate.push_back(current);
+                cycles.erase(current);
                 break;
-
             case 1:
-                cycles[current].push_back(nei[0]);
+                (*current).push_back(nei[0]);
                 break;
             default:
-                for (auto n : nei)
+                int place = current - cycles.begin();
+                for (auto it = (nei.begin() + 1); it != nei.end(); it++)
                 {
-                    cycles.push_back(Path(cycles[current]));
-                    cycles.back().push_back(n);
+                    cycles.push_back(Path(cycles[place]));
+                    cycles.back().push_back(*it);
                 }
-                toDelate.push_back(current);
+                cycles[place].push_back(nei[0]);
                 break;
             }
-        for (auto it = toDelate.rbegin(); it != toDelate.rend(); it++)
-            cycles.erase(cycles.begin() + *it);
-        bool test = true;
-        int next = current;
-        for (size_t i = 0; i < cycles.size(); i++)
+        if (cycles.empty() )
         {
-            if (!cycles[i].full && cycles[i].allCost() < cycles[next].length)
+            auto min = std::min_element(full.begin(), full.end(),Path::allCostComp);
+            if ((unsigned int)(g.vertexData(0) / 2) < (*min).allCost())
+                return {(g.vertexData(0) / 2), std::vector<size_t>{}};
+            return {(*min).allCost(), (*min).path};
+        }
+        if (!full.empty())
+        {
+            auto min = std::min_element(full.begin(), full.end(), Path::allCostComp);
+            auto min2 = std::min_element(cycles.begin(), cycles.end(), Path::lengthComp);
+            if ((*min).allCost() <= (*min2).length)
             {
-                next = i;
-                test = false;
+                if ((unsigned int)(g.vertexData(0) / 2) < (*min).allCost())
+                    return {(g.vertexData(0) / 2), std::vector<size_t>{}};
+                return {(*min).allCost(), (*min).path};
             }
         }
-        if (next == current && cycles[current].checkFull())
-            return {cycles[current].allCost(), cycles[current].path};
-        else if (std::all_of(cycles.begin(),cycles.end(),[](Path &p) {return p.checkFull();}))
-        {
-            auto result = std::min_element(cycles.begin(), cycles.end(), [](Path p1, Path p2) { return p1.allCost() < p2.allCost(); });
-            return {(*result).allCost(), (*result).path};
-        }
-        current = next;
+        current = std::min_element(cycles.begin(), cycles.end(), Path::allCostComp);
     }
 }
+//     bool test = true;
+//     auto next = current;
+//     // auto next = std::min_element(cycles.begin(), cycles.end(), [&](Path p1, Path p2) { return p1.allCost() < p2.allCost(); });
+//     for (size_t i = 0; i < cycles.size(); i++)
+//     {
+//         if (!cycles[i].full && cycles[i].allCost() < cycles[next].length)
+//         {
+//             next = i;
+//             test = false;
+//         }
+//     }
+
+//     if ((*current).checkFull() && (*current).allCost() < (*std::min_element(cycles.begin(), cycles.end(), [&](Path p1, Path p2) { return p1.length < p2.length; })).length)
+//     {
+//         if ((unsigned int)(g.vertexData(0) / 2) < (*current).allCost())
+//             return {(g.vertexData(0) / 2), std::vector<size_t>{}};
+//         return {(*current).allCost(), (*current).path};
+//     }
+//     // current = next - cycles.begin();
+//     // !to jest warunek wyjścia jeżeli wszystkie są odwiedzone
+//     if (cycles.empty())
+//     {
+//         if ((unsigned int)(g.vertexData(0) / 2) < (*current).allCost())
+//             return {(g.vertexData(0) / 2), std::vector<size_t>{}};
+//         auto result = std::min_element(cycles.begin(), cycles.end(), [](Path p1, Path p2) { return p1.allCost() < p2.allCost(); });
+//         return {(*result).allCost(), (*result).path};
+//     }
+// }
