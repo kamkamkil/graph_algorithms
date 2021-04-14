@@ -110,6 +110,10 @@ potrzebujemy macierzy bool k na k więc złożoność pamięciowa to o(k^2)
 
 ## Zadanie dodatkowe 1: przemytnicy
 
+### uruchomienie programu
+
+Po [skompilowaniu rozwiązania](#instalacja) (nazywa się przemytnicy) uruchamiamy program przysyłając do niego nazwę pliku tekstowego z danymi jakie chcemy wprowadzić
+
 ### sposób rozumowania
 
 Ten problem można przedstawić w następujący sposób: szukamy takiego cyklu prostego przechodzącego przez konkretny wierzchołek która będzie najkrótsza wedle następującej metryki: suma długości krawędzi plus połowa wartości najtańszego wierzchołka problem ten można rozwiązać szukając wszystkich cykli prostych i następnie sprawdzić który z nich jest najkrótszy lub zastosować podobny algorytm do algorytmu Dijkstry.  
