@@ -32,7 +32,7 @@ cmake ..
 
 teraz mamy już wygenerowany naż makefile, wystarczy wpisać make i nasz program zostanie skompilowany, pliki wykonywalne będą znajdować się w folderze build.
 
-Jeżeli chcemy tyko sprawdzić czy testy poprawnie są wykonywane możemy będąc w pliku build wpisać `ctest` (działa po skompilowaniu programu)
+Jeżeli chcemy tyko sprawdzić czy testy poprawnie są wykonywane możemy będąc w pliku build wpisać `ctest` (działa po skompilowaniu programu, logi pojawią się w pliku build)
 
 ## zad 5 topologiczne sortowanie wierzchołków
 
@@ -113,7 +113,10 @@ potrzebujemy macierzy bool k na k więc złożoność pamięciowa to o(k^2)
 ### sposób rozumowania
 
 Ten problem można przedstawić w następujący sposób: szukamy takiego cyklu prostego przechodzącego przez konkretny wierzchołek która będzie najkrótsza wedle następującej metryki: suma długości krawędzi plus połowa wartości najtańszego wierzchołka problem ten można rozwiązać szukając wszystkich cykli prostych i następnie sprawdzić który z nich jest najkrótszy lub zastosować podobny algorytm do algorytmu Dijkstry.  
-Jak zastosowałem pierwszą metodę czyli znalazłem wszystkie cykle przechodzące przez wierzchołek zerowy i wybrałem najtańszą opcję, zrobiłem to w następujący sposób
+
+### naiwny sposób rozumowania
+
+w naiwnym sposobie rozumowania na początku szukamy wszystkich pętli a następnie wybieramy tą najtańszą
 
 1. Stwórz wektor wektorów V i włóż do niego wektor zawierający wierzchołek 0
 
@@ -133,12 +136,100 @@ Jak zastosowałem pierwszą metodę czyli znalazłem wszystkie cykle przechodzą
 
 Następnie dla każdej pętli liczymy jej długość zliczając sumę długości krawędzi oraz dodając do niej połowę najtańszej wartości wierzchołka, do naszego wektora cen warto dodać jeszcze połowę ceny wierzchołka 0 na wypadek jakby to była najbardziej opłacalna trasa
 
-```c
+### limitację rozwiązania naiwnego
 
-W zależności kiedy pan to będzie czytał niektóre z tych limitacji może będą już poprawionę 
+Implementacja mojego rozwiązania na pewno nie jest idealna wektory V' które na pewno nie będą już dalej rozwijane dalej są brane pod uwagę (powinny zostać przeniesione do innego zbioru) do tego w przypadku 3a zamiast usuwać i dodawać wektory powinniśmy wykorzystać jeden już istniejący. Poza tym w mojej implementacji grafu szukanie sąsiadów jest dość kosztownę więc przechowywanie wcześniej obliczonych wartość np. w mapie również poprawiło by wydolność programu. Dodatkowo test "many_dead_ends" ujawnił że algorytm podstawowy nie zawsze usuwa wszystkie niepoprawne cykle.
+
+### (bardziej) optymalne rozwiązanie
+
+w (bardziej) optymalnym rozumowaniu zamiast szukać każdej z pęli po kolei w każdej iteracji algorytmu wybieramy najtańszą opcję:
+
+przyjmujemy punkt startu current = 0
+
+1. Stwórz wektor wektorów V i włóż do niego wektory w postaci {0,n} gdzie n to sąsiedzi wierzchołka 0
+
+2. sprawdzamy czy ostatni wierzchołek to punkt 0 jeżeli tak to przenosimy ten cykl do wektora full pt: 4
+
+3. wyszukujemy sąsiadów ostatniego wierzchołka pętli jeżeli ma
+
+    a. 0 sąsiadów to oznacza nie przeszukujemy teraz pętli, więc usuwamy tą pętle
+
+    b. 1.sąsiada to jeżeli jest to dodajemy go do pętli
+
+    c. > 1 sąsiadów to tworzymy kopię aktualnego cyklu i na koniec tych kopii dodajemy ten wieszchołek dla każdego sąsiada poza jednym którego zostawiamy aby dodać go do aktualnego cyklu (nie musimy wtedy usuwać nic z wektora)
+
+4. następna pętla nad którą pracujemy to taka która ma najmniejszy całkowity koszt
+
+5. wracamy teraz do pk 2 z cyklem current wybranym z poprzednim punkcie chyba że zostanie spełniony jeden z warunków stopu:
+
+    a. wszystkie poprawne cykle zostały w pełni rozpoznanę w tedy musimy przeszukać tą listę i wybrać najtańszą opcję
+
+    b. najtańsza opcja z listy pełnych cykli jest nie droższa niż najtańsza opcja bez ceny zamiany z wektora V (robimy ponieważ wtedy dla każdej nie zerowej ceny zamiany inne opcje będą droższe) - to można jeszcze zoptymalizować [patrz](#jeszcze większa optymalizacja)
+
+6. na koniec musimy jeszcze sprawdzić czy cena zamiany wierzchołka 0 nie jest tańsza niż cena naszej pętli
+
+### złożoność   obliczeniowa
+
+Algorytm w najgorszej opcji musi znaleźć wszystkie pętle wychodzące z wierzchołka 0 co oznacza że musimy przeszukać nasz graf DFS co oznacza O(E + V) dodatkowo pod koniec każdej iteracji musimy wykonać test które będą zależały od ilość aktualnie znanych cyklów.
+
+### złożoność   pamięciowa
+
+potrzeba odpowiednią ilość pamięci na graf: O(V^2 + V) int, dodatkowo potrzeba miejsca na przetrzymywanie miejsca na cykle, każdy cykl ma maksymalnie O(V) wierzchołków w sobie a takich cyków może być maksymalnie O(E) (sytuacja kiedy jeden cykl od 0 do 0) czyli w sumie O(VE)
+
+### porównanie wydolności algorytmu naiwnego i wydajniejszego
+
+przygotowałem prosty benchmark który ma za zadanie porównać wydolność algorytmów sprawdzamy go na 2 przypadkach: pierwszym który jest przykładem z zadania w którym oba algorytmy muszą wykonać podobną pracę ponieważ należy sprawdzić cały graf aby znaleźć odpowiednią pętle oraz ciężki który ma jedną tanią trasę i wiele bardzo drogich, naiwny algorytm musi przeszukać je wszystkie a wydajnieszy kończy prace po znalezieniu taniej pętli. Aby go uruchomić można uruchomić program  `benchmarkPrzemytnicy` albo użyć `ctest` wtedy wynik pojawi się w logach znajdujących się w pliku build.
+
+#### wyniki benchmarku
+
+```bash
+-------------------------------------------------------------------------------
+benchmark_easy
+-------------------------------------------------------------------------------
+
+benchmark name                       samples       iterations    estimated
+                                     mean          low mean      high mean
+                                     std dev       low std dev   high std dev
+-------------------------------------------------------------------------------
+naiveAlgorithm                                 100             4    21.8828 ms 
+                                        53.4464 us    52.7004 us    55.3936 us 
+                                        5.70498 us    2.64138 us    11.7936 us
+
+betterAlgorithm                                100             4     23.482 ms 
+                                        56.9374 us    55.0001 us    61.9646 us 
+                                        14.7598 us    6.76637 us    29.8458 us
+
+
+-------------------------------------------------------------------------------
+benchmark_hard
+-------------------------------------------------------------------------------
+
+benchmark name                       samples       iterations    estimated
+                                     mean          low mean      high mean
+                                     std dev       low std dev   high std dev
+-------------------------------------------------------------------------------
+naiveAlgorithm                                 100             2    40.7802 ms 
+                                        197.446 us    191.964 us    206.791 us 
+                                        35.8081 us    23.3096 us    53.3342 us
+
+betterAlgorithm                                100             2    23.1002 ms 
+                                        110.509 us    108.922 us    114.048 us 
+                                        11.4989 us    6.39255 us    22.4014 us
 
 ```
 
-### limitację rozwiązania
+jak widać po wynikach dla prostego przykładu różnicy nie ma a nawet lepszy algorytm może być mniej wydajny a w przypadku mniej korzystnego na naiwnego algorytmu przykładu rożnica potrafi być nawet dwukrotna (wyniki oczywiście będą się różnić w zależności od systemu)
 
-Implementacja mojego rozwiązania na pewno nie jest idealna wektory V' które na pewno nie będą już dalej rozwijane dalej są brane pod uwagę (powinny zostać przeniesione do innego zbioru) do tego w przypadku 3a zamiast usuwać i dodawać wektory powinniśmy wykorzystać jeden już istniejący. Poza tym w mojej implementacji grafu szukanie sąsiadów jest dość kosztownę więc przechowywanie wcześniej obliczonych wartość np. w mapie również poprawiło by wydolność programu. Dodatkowo test "many_dead_ends" ujawnił że algorytm podstawowy nie zawsze usuwa wszystkie niepoprawne cykle.
+### dodatkowe uwagi
+
+#### wyjście z pętli
+
+jeżeli w grafie jest pętla która nie zawiera wierzchołka 0 nie ma jawnego sposobu w jaki algorytm zatrzymuje dodawanie tych wierzchołków w kółko jednak ta trasa w pewnym momencie dłuższa od pozostałych możliwości więc na pewno algorytm się skończy. Można by było jawnie sprawdzać czy na pewno wierzchołek został nie został już odwiedzony w tej pętli ale podjąłem decyzje że taka taka sytuacja będzie występować żadziej więc dodatkowe sprawdzanie średnio wydłużyło by czas trwania algorytmu.
+
+#### przypadek w którym samo złoto jest "najtańsze"
+
+Jak w powyższym przypadku można by było w każdej iteracji sprawdzać czy złoto nie jest tańszą opcją ale jako że taka sytuacja nie będzie występować często podjąłem decyzję aby sprawdzać taki przypadek dopiero na końcu
+
+#### jeszcze większa optymalizacja
+
+nasz algorytm zakłada że dodatkowy koszt zmiany jest nam nie znany, jednak można by było sprawdzać jaki jest najtańszy koszt zmiany i jego użyć w różnicy przy warunku wyjścia, wtedy algorytm w niektórych sytuacjach kończyłby się wcześniej
