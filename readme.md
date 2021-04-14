@@ -164,7 +164,7 @@ przyjmujemy punkt startu current = 0
 
     a. wszystkie poprawne cykle zostały w pełni rozpoznanę w tedy musimy przeszukać tą listę i wybrać najtańszą opcję
 
-    b. najtańsza opcja z listy pełnych cykli jest nie droższa niż najtańsza opcja bez ceny zamiany z wektora V (robimy ponieważ wtedy dla każdej nie zerowej ceny zamiany inne opcje będą droższe) - to można jeszcze zoptymalizować [patrz](#jeszcze większa optymalizacja)
+    b. najtańsza opcja z listy pełnych cykli jest nie droższa niż najtańsza opcja bez ceny zamiany z wektora V (robimy ponieważ wtedy dla każdej nie zerowej ceny zamiany inne opcje będą droższe) - to można jeszcze zoptymalizować [patrz](#jeszcze-większa-optymalizacja)
 
 6. na koniec musimy jeszcze sprawdzić czy cena zamiany wierzchołka 0 nie jest tańsza niż cena naszej pętli
 
