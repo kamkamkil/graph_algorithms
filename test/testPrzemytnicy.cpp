@@ -56,7 +56,6 @@ TEST_CASE("alternative_paths_lazy", "[lazy]")
     g.insertEdge(4, 6, 100);
     g.insertEdge(5, 6, 200);
     g.insertEdge(6, 0, 25);
-    // g.exportToDot("../../dot.d",true,true);
     REQUIRE(przemytnicyLazy(g).second == std::vector<size_t>{0, 1, 3, 4, 6});
     REQUIRE(przemytnicyLazy(g).first == 200);
 }
@@ -141,7 +140,6 @@ TEST_CASE("alternative_paths", "[normal]")
     g.insertEdge(4, 6, 100);
     g.insertEdge(5, 6, 200);
     g.insertEdge(6, 0, 25);
-    g.exportToDot("../../temp.dot", true, true);
     REQUIRE(przemytnicy(g).second == std::vector<size_t>{0, 1, 3, 4, 6, 0} );
     REQUIRE(przemytnicy(g).first == 200);
 }
@@ -242,8 +240,5 @@ TEST_CASE("not_obvious_shortcut", "[normal]")
     g.insertEdge(3, 4, 1);
     g.insertEdge(3, 0, 1);
     g.insertEdge(4, 0, 1);
-    g.exportToDot("../../k.dot",true,true,przemytnicy(g).second);
     REQUIRE(przemytnicy(g).second == std::vector<size_t>{0,1,2,3,4,0});
-
-
 }
