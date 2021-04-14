@@ -7,7 +7,7 @@
 
 Graph<int, int> skarbonkaLoad(std::string filename)
 {
-    std::ifstream file("data.txt");
+    std::ifstream file(filename);
     Graph<int, int> g;
     std::string s;
     int n = 0;
@@ -34,7 +34,40 @@ Graph<int, int> skarbonkaLoad(std::string filename)
     return g;
 }
 
-int skarbonkaNaive(Graph<int, int> g)
+static void visit(Graph<int, int> &g, std::vector<bool> &visited, size_t start)
+{
+    visited[start] = true;
+    auto nei = g.neighbours(start);
+    if (!nei.empty())
+        while (!visited[nei[0]])
+        {
+            visited[nei[0]] = true;
+            nei = g.neighbours(nei[0]);
+            if (nei.empty())
+                break;
+        }
+}
+
+int skarbonka(Graph<int, int> &g)
+{
+    int result = 0;
+    std::vector<bool> visited(g.nrOfVertices(), false);
+    for (size_t i = 0; i < g.nrOfVertices(); i++)
+        if (g.predecessor(i).empty())
+        {
+            visit(g, visited, i);
+            result++;
+        }
+    while (std::none_of(visited.begin(), visited.end(), [](bool b) { return b; }))
+    {
+        auto node = std::find(visited.begin(), visited.end(), false);
+        visit(g, visited, node - visited.begin());
+        result++;
+    }
+    return result;
+}
+
+int skarbonkaNaive(Graph<int, int> &g)
 {
     int result = 0;
     std::vector<bool> visited(g.nrOfVertices(), false);
@@ -67,6 +100,9 @@ int main(int argc, char const *argv[])
 
     // std::ifstream file(argv[1]);
     // g = skarbonkaLoad(argv[1]);
-    std::cout << skarbonkaNaive(skarbonkaLoad("data.txt")) << std::endl;
+    std::string s = "data.txt";
+    auto g = skarbonkaLoad(s);
+    std::cout << skarbonka(g) << std::endl;
+    // std::cout << skarbonkaNaive(skarbonkaLoad(argv[1])) << std::endl;
     return 0;
 }
