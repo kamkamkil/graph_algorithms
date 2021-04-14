@@ -1,6 +1,13 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
+#include <algorithm>
 #include "graph.hpp"
+
+
+
+
+
 
 int main(int argc, char const *argv[])
 {
@@ -10,10 +17,10 @@ int main(int argc, char const *argv[])
     //     return -1;
     // }
 
-    Graph<int, int> g;
-    std::string s;
     // std::ifstream file(argv[1]);
     std::ifstream file("data.txt");
+    Graph<int, int> g;
+    std::string s;
     int n = 0;
     int amount;
     while (std::getline(file, s))
@@ -29,13 +36,31 @@ int main(int argc, char const *argv[])
         else
         {
             auto nr = split(s, ' ');
-            if( n - 1 != std::stoi(nr[0]) - 1)
-                g.insertEdge( n - 1,std::stoi(nr[0]) - 1);
+            if (n - 1 != std::stoi(nr[0]) - 1)
+                g.insertEdge(n - 1, std::stoi(nr[0]) - 1);
         }
         n++;
     }
     file.close();
     g.exportToDot("../../temp.dot");
-    
+    int result = 0;
+    std::vector<bool> visited(g.nrOfVertices(), false);
+    for (size_t i = 0; i < g.nrOfVertices(); i++)
+    {
+        if (g.predecessor(i).empty())
+        {
+            for (auto it = g.beginDFS(i); it != g.endDFS(); it++)
+                visited[it.id()] = true;
+            result++;
+        }
+    }
+    while (std::none_of(visited.begin(), visited.end(), [](bool b) { return b; }))
+    {
+        auto node = std::find(visited.begin(), visited.end(), false);
+        for (auto it = g.beginDFS(node - visited.begin()); it != g.endDFS(); it++)
+            visited[it.id()] = true;
+        result++;
+    }
+    std::cout << result << std::endl;
     return 0;
 }
