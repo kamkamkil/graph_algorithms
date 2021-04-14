@@ -41,11 +41,23 @@ add_executable(benchmarkSkarbonka test/benchmarkSkarbonka.cpp)
 target_link_libraries(benchmarkSkarbonka skarbonkaLib)
 
 add_test(testGraph testGraph)
+set_tests_properties(testGraph PROPERTIES LABELS standard)
+
 add_test(testGraphAlgorithms testGraphAlgorithms)
+set_tests_properties(testGraphAlgorithms PROPERTIES LABELS standard)
+
 add_test(testprzemytnicy testprzemytnicy)
-add_test(benchmarkPrzemytnicy benchmarkPrzemytnicy)
-add_test(benchmarkSkarbonka benchmarkSkarbonka)
+set_tests_properties(testprzemytnicy PROPERTIES LABELS standard)
+
 add_test(testSkarbonka testSkarbonka)
+set_tests_properties(testSkarbonka PROPERTIES LABELS standard)
+
+
+add_test(benchmarkPrzemytnicy benchmarkPrzemytnicy)
+set_tests_properties(benchmarkPrzemytnicy PROPERTIES LABELS benchmark)
+
+add_test(benchmarkSkarbonka benchmarkSkarbonka)
+set_tests_properties(benchmarkSkarbonka PROPERTIES LABELS benchmark)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
