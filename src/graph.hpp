@@ -126,7 +126,7 @@ public:
      * @param vertexLabel prawda jeżeli mają być nazwy wierzchołków (domyślnie fałsz)
      * @param path ścieżka do wyrysowania na czerwono (Domyślnie pusta)
      */
-    void exportToDot(std::string filename,bool edgeLabel = false, bool vertexLabel = false,std::vector<int> path = {}); 
+    void exportToDot(std::string filename,bool edgeLabel = false, bool vertexLabel = false,std::vector<size_t> path = {}); 
 
     /**
      * @brief zwraca ilość wierzchołków w grafie 
@@ -420,7 +420,7 @@ void Graph<V, E>::addFromCSV(std::string filename, bool addNode, bool replace)
 }
 
 template <typename V, typename E>
-void Graph<V, E>::exportToDot(std::string filename,bool edgeLabel_, bool vertexLabel_,std::vector<int> path)
+void Graph<V, E>::exportToDot(std::string filename,bool edgeLabel_, bool vertexLabel_,std::vector<size_t> path)
 {
     std::ofstream file;
     file.open(filename);
