@@ -58,7 +58,7 @@ int skarbonka(Graph<int, int> &g)
             visit(g, visited, i);
             result++;
         }
-    while (std::none_of(visited.begin(), visited.end(), [](bool b) { return b; }))
+    while (!std::all_of(visited.begin(), visited.end(), [](bool b) { return b; }))
     {
         auto node = std::find(visited.begin(), visited.end(), false);
         visit(g, visited, node - visited.begin());

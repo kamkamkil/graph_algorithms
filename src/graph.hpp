@@ -64,7 +64,7 @@ public:
      * @param vertex_data dane wieszchołka 
      * @return VerticesIterator na nowo utworzony wierzchołek
      */
-    VerticesIterator insertVertex(const V &vertex_data);
+    VerticesIterator insertVertex(const V &vertex_data = V());
 
     /**
      * @brief dodaje nową krawędź między wierzchołkami

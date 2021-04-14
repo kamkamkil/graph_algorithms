@@ -1,5 +1,4 @@
 #define CATCH_CONFIG_MAIN
-#define CATCH_CONFIG_ENABLE_BENCHMARKING
 // #define CATCH_CONFIG_CONSOLE_WIDTH 300
 #include "../lib/catch/catch.hpp"
 #include "../src/przemytnicylib.cpp"

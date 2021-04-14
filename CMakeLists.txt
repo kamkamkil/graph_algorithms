@@ -34,6 +34,9 @@ target_link_libraries(skarbonkaLib graph)
 add_executable(skarbonka src/skarbonka.cpp)
 target_link_libraries(skarbonka skarbonkaLib)
 
+add_executable(testSkarbonka test/testSkarbonka.cpp)
+target_link_libraries(testSkarbonka skarbonkaLib)
+
 add_test(testGraph testGraph)
 add_test(testGraphAlgorithms testGraphAlgorithms)
 add_test(testprzemytnicy testprzemytnicy)

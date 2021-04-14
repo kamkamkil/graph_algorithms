@@ -6,6 +6,8 @@ dokumentację projektu można znaleźć na <https://kamkamkil.github.io/graph_al
 
 ## instalacja
 
+### linux
+
 do kompilacji programu wymagany jest program cmake,aby zainstalować make należy wpisać:
 
 ```bash
@@ -31,6 +33,20 @@ cmake ..
 ```
 
 teraz mamy już wygenerowany naż makefile, wystarczy wpisać make i nasz program zostanie skompilowany, pliki wykonywalne będą znajdować się w folderze build.
+
+### windows
+
+na początku musimy mieć zainstalowany program cmake. Jeżeli mamy packet Manager choco możemy zainstalować cmake za jego pomocą:
+
+```bash
+choco install cmake
+```
+
+jeżeli nie korzystamy z choco możemy prosto zainstalować cmake [tutaj](https://cmake.org/download/) należy pamiętać aby dodać go jako zmienną środowiskową.
+
+następnie musimy utworzyć plik built (np `mkdir build`) i w nim wpisujemy `cmake ..`, a następnie wpisujemy  `cmake --build .`
+
+### tylko uruchomienie testów
 
 Jeżeli chcemy tyko sprawdzić czy testy poprawnie są wykonywane możemy będąc w pliku build wpisać `ctest` (działa po skompilowaniu programu, logi pojawią się w pliku build)
 
