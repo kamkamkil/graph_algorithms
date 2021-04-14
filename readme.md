@@ -62,7 +62,7 @@ następnie musimy utworzyć plik built (np `mkdir build`) i w nim wpisujemy `cma
 
 ### tylko uruchomienie testów
 
-Jeżeli chcemy tyko sprawdzić czy testy poprawnie są wykonywane możemy będąc w pliku build wpisać `ctest` (działa po skompilowaniu programu, logi pojawią się w pliku build)
+Aby wykonać wszystkie testy, łącznie z benchmarkami, należy wpisać `ctest` będąc w folderze build jeżeli chcemy uruchomić test bez benchmarków należy wpisać `ctest -L standard` a jeżeli chcemy uruchomić tylko benchmarki należy wpisać `ctest -L benchmark`
 
 ## zad 5 topologiczne sortowanie wierzchołków
 
@@ -212,7 +212,7 @@ potrzeba odpowiednią ilość pamięci na graf: O(V^2 + V) int, dodatkowo potrze
 
 ### porównanie wydolności algorytmu naiwnego i wydajniejszego
 
-przygotowałem prosty benchmark który ma za zadanie porównać wydolność algorytmów sprawdzamy go na 2 przypadkach: pierwszym który jest przykładem z zadania w którym oba algorytmy muszą wykonać podobną pracę ponieważ należy sprawdzić cały graf aby znaleźć odpowiednią pętle oraz ciężki który ma jedną tanią trasę i wiele bardzo drogich, naiwny algorytm musi przeszukać je wszystkie a wydajnieszy kończy prace po znalezieniu taniej pętli. Aby go uruchomić można uruchomić program  `benchmarkPrzemytnicy` albo użyć `ctest` wtedy wynik pojawi się w logach znajdujących się w pliku build.
+przygotowałem prosty benchmark który ma za zadanie porównać wydolność algorytmów sprawdzamy go na 2 przypadkach: pierwszym który jest przykładem z zadania w którym oba algorytmy muszą wykonać podobną pracę ponieważ należy sprawdzić cały graf aby znaleźć odpowiednią pętle oraz ciężki który ma jedną tanią trasę i wiele bardzo drogich, naiwny algorytm musi przeszukać je wszystkie a wydajnieszy kończy prace po znalezieniu taniej pętli.
 
 #### wyniki benchmarku
 
