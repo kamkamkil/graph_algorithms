@@ -2,22 +2,11 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include <string>
 #include "graph.hpp"
 
-
-
-
-
-
-int main(int argc, char const *argv[])
+Graph<int, int> skarbonkaLoad(std::string filename)
 {
-    // if (argc != 2)
-    // {
-    //     std::cout << "prosze podac odpowiednia ilosc argumentow" << std::endl;
-    //     return -1;
-    // }
-
-    // std::ifstream file(argv[1]);
     std::ifstream file("data.txt");
     Graph<int, int> g;
     std::string s;
@@ -42,7 +31,11 @@ int main(int argc, char const *argv[])
         n++;
     }
     file.close();
-    g.exportToDot("../../temp.dot");
+    return g;
+}
+
+int skarbonkaNaive(Graph<int, int> g)
+{
     int result = 0;
     std::vector<bool> visited(g.nrOfVertices(), false);
     for (size_t i = 0; i < g.nrOfVertices(); i++)
@@ -61,6 +54,19 @@ int main(int argc, char const *argv[])
             visited[it.id()] = true;
         result++;
     }
-    std::cout << result << std::endl;
+    return result;
+}
+
+int main(int argc, char const *argv[])
+{
+    // if (argc != 2)
+    // {
+    //     std::cout << "prosze podac odpowiednia ilosc argumentow" << std::endl;
+    //     return -1;
+    // }
+
+    // std::ifstream file(argv[1]);
+    // g = skarbonkaLoad(argv[1]);
+    std::cout << skarbonkaNaive(skarbonkaLoad("data.txt")) << std::endl;
     return 0;
 }
