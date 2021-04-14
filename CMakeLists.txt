@@ -28,6 +28,9 @@ target_link_libraries(testprzemytnicy przemytnicylib)
 add_executable(benchmarkPrzemytnicy test/benchmarkPrzemytnicy.cpp)
 target_link_libraries(benchmarkPrzemytnicy przemytnicylib)
 
+add_executable(skarbonka src/skarbonka.cpp)
+target_link_libraries(skarbonka graph)
+
 add_test(testGraph testGraph)
 add_test(testGraphAlgorithms testGraphAlgorithms)
 add_test(testprzemytnicy testprzemytnicy)
