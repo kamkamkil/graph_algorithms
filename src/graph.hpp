@@ -26,7 +26,6 @@ template <typename V, typename E>
 class Graph
 {
 public:
-
     /**
      * @brief iterator po wierzchołkach (rosnąco po id wierzchołków) 
      * 
@@ -44,7 +43,7 @@ public:
      * 
      */
     class DFSIterator;
-    
+
     /**
      * @brief iterator przeszukiwania przez BFS
      * 
@@ -126,7 +125,7 @@ public:
      * @param vertexLabel prawda jeżeli mają być nazwy wierzchołków (domyślnie fałsz)
      * @param path ścieżka do wyrysowania na czerwono (Domyślnie pusta)
      */
-    void exportToDot(std::string filename,bool edgeLabel = false, bool vertexLabel = false,std::vector<size_t> path = {}); 
+    void exportToDot(std::string filename, bool edgeLabel = false, bool vertexLabel = false, std::vector<size_t> path = {});
 
     /**
      * @brief zwraca ilość wierzchołków w grafie 
@@ -279,6 +278,14 @@ public:
      */
     BFSIterator endBFS() { return BFSIterator(); };
 
+    /**
+     * @brief zwraca wszystkie elementy które wskazują na element vertex id
+     * 
+     * @param vertex_id wierzchołek którego poprzedników szukamy 
+     * @return std::vector<size_t> wektor poprzedników
+     */
+    std::vector<size_t> predecessor(std::size_t vertex_id) const;
+
 private:
     std::vector<std::vector<std::optional<E>>> matrix;
     std::vector<V> valueList;
@@ -389,19 +396,19 @@ typename Graph<V, E>::EdgesIterator Graph<V, E>::removeEdge(std::size_t vertex1_
         return endEdges();
 }
 
-    std::vector<std::string> split(const std::string &s, char delim)
-    { 
-        std::vector<std::string> result;
-        std::stringstream ss(s);
-        std::string item;
+std::vector<std::string> split(const std::string &s, char delim)
+{
+    std::vector<std::string> result;
+    std::stringstream ss(s);
+    std::string item;
 
-        while (std::getline(ss, item, delim))
-        {
-            result.push_back(item);
-        }
-
-        return result;
+    while (std::getline(ss, item, delim))
+    {
+        result.push_back(item);
     }
+
+    return result;
+}
 
 template <typename V, typename E>
 void Graph<V, E>::addFromCSV(std::string filename, bool addNode, bool replace)
@@ -412,7 +419,7 @@ void Graph<V, E>::addFromCSV(std::string filename, bool addNode, bool replace)
 
     while (std::getline(file, s))
     {
-        auto v = split(s, ',');        
+        auto v = split(s, ',');
         insertEdge(std::stoi(v[0]), std::stoi(v[1]), std::stoi(v[2]), replace);
     }
 
@@ -420,7 +427,7 @@ void Graph<V, E>::addFromCSV(std::string filename, bool addNode, bool replace)
 }
 
 template <typename V, typename E>
-void Graph<V, E>::exportToDot(std::string filename,bool edgeLabel_, bool vertexLabel_,std::vector<size_t> path)
+void Graph<V, E>::exportToDot(std::string filename, bool edgeLabel_, bool vertexLabel_, std::vector<size_t> path)
 {
     std::ofstream file;
     file.open(filename);
@@ -433,24 +440,23 @@ void Graph<V, E>::exportToDot(std::string filename,bool edgeLabel_, bool vertexL
             file << i << " -> " << var;
             if (edgeLabel_)
             {
-                file << " [ label = \"" << edgeLabel(i,var) << "\"]";
+                file << " [ label = \"" << edgeLabel(i, var) << "\"]";
             }
-            file <<std::endl;
+            file << std::endl;
         }
         if (vertexLabel_)
         {
             file << i << " [ label  = \"" << vertexData(i) << "\"]" << std::endl;
         }
-        
     }
     if (!path.empty())
     {
-        for(auto p : path)
+        for (auto p : path)
         {
-            file << p << " [ color = red ]" << std::endl ;  
+            file << p << " [ color = red ]" << std::endl;
         }
     }
-    
+
     file << "}" << std::endl;
 
     file.close();
@@ -463,6 +469,18 @@ std::vector<size_t> Graph<V, E>::neighbours(size_t vertex) const
     for (size_t i = 0; i < valueList.size(); i++)
     {
         if (matrix[vertex][i])
+            result.push_back(i);
+    }
+    return result;
+}
+
+template <typename V, typename E>
+std::vector<size_t> Graph<V, E>::predecessor(std::size_t vertex_id) const
+{
+    std::vector<size_t> result;
+    for (size_t i = 0; i < valueList.size(); i++)
+    {
+        if (matrix[i][vertex_id])
             result.push_back(i);
     }
     return result;
