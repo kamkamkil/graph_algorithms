@@ -1,5 +1,19 @@
 # AISD zadania opis
 
+## spis treści
+
+1. [instalacja](#instalacja)
+
+2. [zad 5 topologiczne sortowanie wierzchołków](#zad-5-topologiczne-sortowanie-wierzchołków)
+
+3. [zad 7 szukanie cyklu w grafie](#zad-7-szukanie-cyklu-w-grafie)
+
+4. [zad 10 domknięcie przechodnie liczone metodą Floyda-Warshalla](#zad-10-domknięcie-przechodnie-liczone-metodą-Floyda\-Warshalla)
+
+5. [Zadanie ciekawe 1: przemytnicy](#Zadanie-ciekawe-1:-przemytnicy)
+
+6. [zadanie ciekawe 2: skarbonka](#zadanie-ciekawe-2:-skarbonka)
+
 ## dokumentacja
 
 dokumentację projektu można znaleźć na <https://kamkamkil.github.io/graph_algorithms/index.html>
