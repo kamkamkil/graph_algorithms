@@ -286,4 +286,39 @@ oryginalna wersja `skarbonkaNaive` nie ma wcześniejszego warunku stopu, zawsze 
 
 ### benchmark
 
-tu pojawi się benchamrk
+```bash
+-------------------------------------------------------------------------------
+simple_example
+...............................................................................
+
+benchmark name                       samples       iterations    estimated
+                                     mean          low mean      high mean
+                                     std dev       low std dev   high std dev
+-------------------------------------------------------------------------------
+naive_algorithm                                100             2    28.0008 ms 
+                                        150.097 us     140.16 us    162.373 us 
+                                        55.9958 us    46.9952 us    65.6539 us
+
+improved_algorithm                             100             9    26.3799 ms 
+                                        26.9756 us    26.3907 us    28.4913 us 
+                                         4.3846 us    1.39188 us    8.45691 us
+
+
+-------------------------------------------------------------------------------
+harder_benchark
+...............................................................................
+
+benchmark name                       samples       iterations    estimated
+                                     mean          low mean      high mean
+                                     std dev       low std dev   high std dev
+-------------------------------------------------------------------------------
+naive algorithm                                100             1    109.385 ms 
+                                        1.08904 ms    1.07599 ms    1.10949 ms 
+                                        81.9418 us    59.1273 us    119.447 us
+
+improved_algorithm                             100             3    30.6591 ms 
+                                        107.138 us    105.225 us    109.915 us 
+                                        11.6243 us    8.68783 us    16.1308 us
+```
+
+Jak widać polepszona wersja nawet 10 razy bardziej wydajna, nawet w przykładnie który nie powinien dawać mu zdecydowanej przewagi, najprawdopodobniej jest to spowodowane tym że algorytm DFS musi dodatkowo przygotowywać pamięć i wykonywać dodatkowe akcję których nie musi wykonywać lepszy algorytm

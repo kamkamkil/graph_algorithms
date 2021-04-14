@@ -37,10 +37,15 @@ target_link_libraries(skarbonka skarbonkaLib)
 add_executable(testSkarbonka test/testSkarbonka.cpp)
 target_link_libraries(testSkarbonka skarbonkaLib)
 
+add_executable(benchmarkSkarbonka test/benchmarkSkarbonka.cpp)
+target_link_libraries(benchmarkSkarbonka skarbonkaLib)
+
 add_test(testGraph testGraph)
 add_test(testGraphAlgorithms testGraphAlgorithms)
 add_test(testprzemytnicy testprzemytnicy)
 add_test(benchmarkPrzemytnicy benchmarkPrzemytnicy)
+add_test(benchmarkSkarbonka benchmarkSkarbonka)
+add_test(testSkarbonka testSkarbonka)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
