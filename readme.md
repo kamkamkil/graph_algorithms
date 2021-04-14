@@ -124,7 +124,7 @@ musi być wykonana k^3 razy gdzie k to ilość wierzchołków. warto jeszcze dod
 
 potrzebujemy macierzy bool k na k więc złożoność pamięciowa to o(k^2)
 
-## Zadanie dodatkowe 1: przemytnicy
+## Zadanie ciekawe 1: przemytnicy
 
 ### uruchomienie programu
 
@@ -253,3 +253,37 @@ Jak w powyższym przypadku można by było w każdej iteracji sprawdzać czy zł
 #### jeszcze większa optymalizacja
 
 nasz algorytm zakłada że dodatkowy koszt zmiany jest nam nie znany, jednak można by było sprawdzać jaki jest najtańszy koszt zmiany i jego użyć w różnicy przy warunku wyjścia, wtedy algorytm w niektórych sytuacjach kończyłby się wcześniej
+
+## zadanie ciekawe 2: skarbonka
+
+### sposób  rozumowania
+
+W tym zadania należy zauważyć że w grafie wierzchołki mogą mieć inny wierzchołek który na nie wskazuje lub nie, możemy również zauważyć że poza pętlami kiedy będziemy się "cofać" to zawsze znajdziemy wierzchołek na który nie wskazuje żaden inny to od tych powinniśmy zacząć analizę następnie przetestować inne.
+
+### Opis  algorytmu
+
+1. Dla każdego wierzchołka n na którego nie skazuje żaden inny wierzchołek (przy każdej iteracji zwiększamy licznik )
+
+    a. zaznacz wierzchołek n jako odwiedzony
+
+    b. jeżeli ma sąsiadów to ustaw jako n jego sąsiada (z treści zadania możemy wnioskować że każdy wierzchołek ma tylko jednego sąsiada)
+
+    c. jeżeli wierzchołek niema sąsiada lub natrafimy na odwiedzonego wcześniej wierzchołka kończymy pętle inaczej wracamy do punktu 1a
+
+2. dla każdego nie odwiedzonego wcześniej wierzchołka robimy punkty a - c, również zwiększając licznik.
+
+### Złożoność  Pamięciowa
+
+do tego algorytmu potrzebujemy znać nasz graf  O(V^2 + V) (w tym przypadku lepiej było by użyć grafu zdefiniowanego jako list sąsiedztwa w tedy złożoność wynosiłaby O(V) ponieważ każdy wierzchołek ma tylko jednego sąsiada) oraz wektor wierzchołków odwiedzonych O(V)
+
+### złożoność obliczeniowa
+
+Musimy odwiedzić każdy wierzchołek jeden raz więc złożoność wynosi O(V), ale jako że złożoność znajdowania sąsiadów którą musimy wykonać dla każdego wierzchołka wynosi O(V), oraz złożoność szukania poprzedników również jest O(V) złożoność całego algorytmu wraz dostępem do danych grafu wynosi O(V^3) użycie grafu w postaci listy sąsiedztwa zredukował by to do O(v^2)
+
+### wersja "zoptymalizowana"
+
+oryginalna wersja `skarbonkaNaive` nie ma wcześniejszego warunku stopu, zawsze sprawdza wszystkie wierzchołki do których możemy się dostać z tego nad którym teraz pracujemy, polepszona wersja `skarbonka` ma wcześniejszy warunek stopu tego testu. To powinno poprawić poprawić wydajność w sytuacjach których mamy długą linię wierzchołków i wiele pojedynczych które w nią celują.
+
+### benchmark
+
+tu pojawi się benchamrk
