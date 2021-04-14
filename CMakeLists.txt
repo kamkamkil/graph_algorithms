@@ -25,9 +25,13 @@ target_link_libraries(przemytnicy przemytnicylib)
 add_executable(testprzemytnicy test/testPrzemytnicy.cpp)
 target_link_libraries(testprzemytnicy przemytnicylib)
 
+add_executable(benchmarkPrzemytnicy test/benchmarkPrzemytnicy.cpp)
+target_link_libraries(benchmarkPrzemytnicy przemytnicylib)
+
 add_test(testGraph testGraph)
 add_test(testGraphAlgorithms testGraphAlgorithms)
 add_test(testprzemytnicy testprzemytnicy)
+add_test(benchmarkPrzemytnicy benchmarkPrzemytnicy)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
