@@ -456,6 +456,18 @@ void Graph<V, E>::exportToDot(std::string filename, bool edgeLabel_, bool vertex
             file << p << " [ color = red ]" << std::endl;
         }
     }
+    for (size_t i = 0; i < nrOfVertices(); i++)
+    {
+        if (predecessor(i).empty() && neighbours(i).empty())
+        {
+            file << i;
+            if (vertexLabel_)
+            {
+                file <<" [ label  = \"" << vertexData(i) << "\"]";
+            }
+            file << std::endl;
+        }
+    }
 
     file << "}" << std::endl;
 
