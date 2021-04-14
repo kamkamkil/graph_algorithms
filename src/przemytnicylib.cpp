@@ -146,7 +146,6 @@ std::pair<int, std::vector<size_t>> przemytnicy(Graph<int, int> g)
         Path(Graph<int, int> *g_, size_t first) : g(g_), path(1, 0), length(0), cheapest(5000) { push_back(first); }
         ~Path() = default;
         std::vector<size_t> path;
-        bool full = false;
         unsigned int length;
         unsigned int cheapest;
         void push_back(size_t item)
@@ -160,7 +159,6 @@ std::pair<int, std::vector<size_t>> przemytnicy(Graph<int, int> g)
         size_t back() { return path.back(); }
         unsigned int allCost() { return length + cheapest; }
         std::vector<size_t> neighbours() { return g->neighbours(back()); }
-        bool checkFull() { return full || back() == 0; }
         static bool allCostComp (Path &p1, Path &p2) { return p1.allCost() < p2.allCost(); }
         static bool lengthComp (Path &p1, Path &p2) { return p1.length < p2.length; }
     };
@@ -222,31 +220,3 @@ std::pair<int, std::vector<size_t>> przemytnicy(Graph<int, int> g)
         current = std::min_element(cycles.begin(), cycles.end(), Path::allCostComp);
     }
 }
-//     bool test = true;
-//     auto next = current;
-//     // auto next = std::min_element(cycles.begin(), cycles.end(), [&](Path p1, Path p2) { return p1.allCost() < p2.allCost(); });
-//     for (size_t i = 0; i < cycles.size(); i++)
-//     {
-//         if (!cycles[i].full && cycles[i].allCost() < cycles[next].length)
-//         {
-//             next = i;
-//             test = false;
-//         }
-//     }
-
-//     if ((*current).checkFull() && (*current).allCost() < (*std::min_element(cycles.begin(), cycles.end(), [&](Path p1, Path p2) { return p1.length < p2.length; })).length)
-//     {
-//         if ((unsigned int)(g.vertexData(0) / 2) < (*current).allCost())
-//             return {(g.vertexData(0) / 2), std::vector<size_t>{}};
-//         return {(*current).allCost(), (*current).path};
-//     }
-//     // current = next - cycles.begin();
-//     // !to jest warunek wyjścia jeżeli wszystkie są odwiedzone
-//     if (cycles.empty())
-//     {
-//         if ((unsigned int)(g.vertexData(0) / 2) < (*current).allCost())
-//             return {(g.vertexData(0) / 2), std::vector<size_t>{}};
-//         auto result = std::min_element(cycles.begin(), cycles.end(), [](Path p1, Path p2) { return p1.allCost() < p2.allCost(); });
-//         return {(*result).allCost(), (*result).path};
-//     }
-// }
