@@ -62,7 +62,7 @@ następnie musimy utworzyć plik built (np `mkdir build`) i w nim wpisujemy `cma
 
 ### tylko uruchomienie testów
 
-Aby wykonać wszystkie testy, łącznie z benchmarkami, należy wpisać `ctest` będąc w folderze build jeżeli chcemy uruchomić test bez benchmarków należy wpisać `ctest -L standard` a jeżeli chcemy uruchomić tylko benchmarki należy wpisać `ctest -L benchmark`
+Aby wykonać wszystkie testy, łącznie z benchmarkami, należy wpisać `ctest` będąc w folderze build jeżeli chcemy uruchomić test bez benchmarków należy wpisać `ctest -L standard` a jeżeli chcemy uruchomić tylko benchmarki należy wpisać `ctest -L benchmark`.Logi znajdziemy w build\Testing\Temporary.
 
 ## zad 5 topologiczne sortowanie wierzchołków
 
