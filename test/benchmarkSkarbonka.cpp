@@ -45,7 +45,6 @@ TEST_CASE("harder_benchark", "[benchmark]")
     g.insertEdge(13, 4);
     g.insertEdge(14, 5);
     g.insertEdge(15, 6);
-    g.exportToDot("../../a.dot");
     REQUIRE(skarbonka(g) == 8);
     REQUIRE(skarbonkaNaive(g) == 8);
     BENCHMARK("naive algorithm")
